@@ -2,23 +2,44 @@
   // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
   const GAS_URL = "https://script.google.com/macros/s/AKfycbxtvfJUN1rGAcQ4e9kje5BYJgmg7DpgxVCJqVbRQcTkEzlT_PFQuM0aKhPyDTKFzdr2/exec";
 
-  let photoData = null;
-  let video = document.getElementById('webcam');
-  let previewImg = document.getElementById('previewImg');
-  let canvas = document.getElementById('canvas');
-  let btnCapture = document.getElementById('btnCapture');
-  let btnRetake = document.getElementById('btnRetake');
-  let photoStatus = document.getElementById('photoStatus');
-  let btnSubmit = document.getElementById('btnSubmit');
-  let autoRefreshInterval = null;
+  // KODE BARU
+let photoData = null;
+let video, previewImg, canvas, btnCapture, btnRetake, photoStatus, btnSubmit;
+let autoRefreshInterval = null;
 
-  // Inisialisasi Kamera
-  function initCamera() {
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => { video.srcObject = stream; })
-      .catch(err => alert("Gagal mengakses kamera: " + err));
-  }
+// Jalankan setelah seluruh elemen HTML dimuat sempurna
+document.addEventListener('DOMContentLoaded', function() {
+  video = document.getElementById('webcam');
+  previewImg = document.getElementById('previewImg');
+  canvas = document.getElementById('canvas');
+  btnCapture = document.getElementById('btnCapture');
+  btnRetake = document.getElementById('btnRetake');
+  photoStatus = document.getElementById('photoStatus');
+  btnSubmit = document.getElementById('btnSubmit');
+
   initCamera();
+});
+
+function initCamera() {
+  if (!video) return;
+  
+  const constraints = {
+    video: {
+      facingMode: "user",
+      width: { ideal: 640 },
+      height: { ideal: 480 }
+    }
+  };
+
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(stream => { 
+      video.srcObject = stream; 
+    })
+    .catch(err => {
+      console.error("Detail Error Kamera:", err);
+      alert("Gagal mengakses kamera: " + err.message + "\n\nPastikan Anda menggunakan HTTPS dan telah memberikan izin kamera di browser.");
+    });
+}
 
   // Kompresi Foto agar URL JSONP tidak terlalu panjang
   function takeSnapshot() {
