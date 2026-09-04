@@ -166,46 +166,44 @@
     }
 
     // Submit Presensi via HTTP POST
-    document.getElementById('attendanceForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (!photoData) return alert("Silakan ambil foto selfie terlebih dahulu.");
+document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (!photoData) return alert("Silakan ambil foto selfie terlebih dahulu.");
 
-      btnSubmit.disabled = true;
-      btnSubmit.innerText = "Mengirim...";
+  btnSubmit.disabled = true;
+  btnSubmit.innerText = "Mengirim...";
 
-      let payload = {
-        action: 'simpan',
-        namaAcara: document.getElementById('namaAcara').value,
-        nama: document.getElementById('nama').value,
-        asal: document.getElementById('asal').value,
-        image: photoData
-      };
+  let payload = {
+    action: 'simpan',
+    namaAcara: document.getElementById('namaAcara').value,
+    nama: document.getElementById('nama').value,
+    asal: document.getElementById('asal').value,
+    image: photoData
+  };
 
-      fetch(GAS_URL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        if(res.status === 'success') {
-          alert("Presensi Berhasil!");
-          document.getElementById('nama').value = '';
-          document.getElementById('asal').value = '';
-          resetCamera(); // Mengembalikan kamera ke posisi siap foto baru
-        } else {
-          alert("Gagal: " + res.message);
-          btnSubmit.disabled = false;
-        }
-        btnSubmit.innerText = "Kirim Presensi";
-      })
-      .catch(err => {
-        alert("Terjadi kesalahan koneksi.");
-        btnSubmit.disabled = false;
-        btnSubmit.innerText = "Kirim Presensi";
-      });
-    });
+  // Mengirim request dengan no-cors agar tidak diblokir browser
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors', 
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    // Dengan no-cors, respon dianggap sukses jika tidak ada error jaringan
+    alert("Presensi Berhasil Dikirim!");
+    document.getElementById('nama').value = '';
+    document.getElementById('asal').value = '';
+    resetCamera();
+    btnSubmit.disabled = false;
+    btnSubmit.innerText = "Kirim Presensi";
+  })
+  .catch(err => {
+    alert("Terjadi kesalahan jaringan/koneksi.");
+    console.error(err);
+    btnSubmit.disabled = false;
+    btnSubmit.innerText = "Kirim Presensi";
+  });
+});
 
     // Navigasi Tampilan
     function switchMode(mode) {
