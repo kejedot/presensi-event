@@ -8,8 +8,21 @@
   <style>
     body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    #webcam { width: 100%; max-width: 320px; border-radius: 10px; transform: scaleX(-1); }
+    
+    /* Container Kamera & Preview */
+    .camera-container {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: #000;
+    }
+    #webcam { width: 100%; transform: scaleX(-1); display: block; }
+    #previewImg { width: 100%; display: none; border-radius: 10px; }
     #canvas { display: none; }
+    
     .profile-img { width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 5px solid #0d6efd; }
     .display-mode { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
   </style>
@@ -21,7 +34,7 @@
     <div class="d-flex justify-content-end mb-3">
       <button class="btn btn-outline-secondary btn-sm me-2" onclick="switchMode('form')">Form Presensi</button>
       <button class="btn btn-outline-primary btn-sm" onclick="switchMode('proyektor')">Tampilan Proyektor</button>
-    </div -->
+    </div-->
 
     <!-- TAMPILAN 1: FORM PRESENSI PESERTA -->
     <div id="form-section">
@@ -40,17 +53,26 @@
                 <input type="text" id="nama" class="form-control" placeholder="Nama Anda" required>
               </div>
               <div class="mb-3">
-                <label class="form-label">Asal / Instansi</label>
-                <input type="text" id="asal" class="form-control" placeholder="Nama Perusahaan / Komunitas / Kota" required>
+                <label class="form-label">DPD Kab/Kota</label>
+                <input type="text" id="asal" class="form-control" placeholder="Masukkan Kab/Kota" required>
               </div>
               
+              <!-- SECTION FOTO SELFIE -->
               <div class="mb-3 text-center">
                 <label class="form-label d-block">Foto Selfie</label>
-                <video id="webcam" autoplay playsinline></video>
-                <canvas id="canvas"></canvas>
-                <div class="mt-2">
-                  <button type="button" class="btn btn-sm btn-secondary" onclick="takeSnapshot()">📸 Ambil Foto</button>
+                
+                <div class="camera-container mb-2">
+                  <video id="webcam" autoplay playsinline></video>
+                  <img id="previewImg" alt="Hasil Foto">
+                  <canvas id="canvas"></canvas>
                 </div>
+
+                <!-- Tombol Aksi Kamera -->
+                <div>
+                  <button type="button" id="btnCapture" class="btn btn-sm btn-secondary" onclick="takeSnapshot()">📸 Ambil Foto</button>
+                  <button type="button" id="btnRetake" class="btn btn-sm btn-warning d-none" onclick="resetCamera()">🔄 Foto Ulang</button>
+                </div>
+                
                 <small id="photoStatus" class="text-danger d-block mt-1">Foto belum diambil</small>
               </div>
 
@@ -82,26 +104,65 @@
 
     let photoData = null;
     let video = document.getElementById('webcam');
+    let previewImg = document.getElementById('previewImg');
     let canvas = document.getElementById('canvas');
+    let btnCapture = document.getElementById('btnCapture');
+    let btnRetake = document.getElementById('btnRetake');
+    let photoStatus = document.getElementById('photoStatus');
+    let btnSubmit = document.getElementById('btnSubmit');
     let autoRefreshInterval = null;
 
     // Inisialisasi Kamera
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => { video.srcObject = stream; })
-      .catch(err => alert("Gagal mengakses kamera: " + err));
+    function initCamera() {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => { video.srcObject = stream; })
+        .catch(err => alert("Gagal mengakses kamera: " + err));
+    }
 
+    initCamera();
+
+    // Take Snapshot
     function takeSnapshot() {
       canvas.width = video.videoWidth || 320;
       canvas.height = video.videoHeight || 240;
       let context = canvas.getContext('2d');
       context.translate(canvas.width, 0);
-      context.scale(-1, 1); // Mirroring foto
+      context.scale(-1, 1); // Mirroring foto agar tidak terbalik
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
       
       photoData = canvas.toDataURL('image/jpeg', 0.8);
-      document.getElementById('photoStatus').innerText = "✓ Foto Berhasil Diambil";
-      document.getElementById('photoStatus').className = "text-success d-block mt-1";
-      document.getElementById('btnSubmit').disabled = false;
+
+      // Tampilkan hasil preview & sembunyikan live video
+      previewImg.src = photoData;
+      previewImg.style.display = 'block';
+      video.style.display = 'none';
+
+      // Switch tombol
+      btnCapture.classList.add('d-none');
+      btnRetake.classList.remove('d-none');
+
+      // Update Status
+      photoStatus.innerText = "✓ Foto Berhasil Diambil";
+      photoStatus.className = "text-success d-block mt-1";
+      btnSubmit.disabled = false;
+    }
+
+    // Reset Kamera / Foto Ulang
+    function resetCamera() {
+      photoData = null;
+
+      // Sembunyikan preview & tampilkan live video kembali
+      previewImg.style.display = 'none';
+      video.style.display = 'block';
+
+      // Switch tombol
+      btnRetake.classList.add('d-none');
+      btnCapture.classList.remove('d-none');
+
+      // Reset Status
+      photoStatus.innerText = "Foto belum diambil";
+      photoStatus.className = "text-danger d-block mt-1";
+      btnSubmit.disabled = true;
     }
 
     // Submit Presensi via HTTP POST
@@ -109,9 +170,8 @@
       e.preventDefault();
       if (!photoData) return alert("Silakan ambil foto selfie terlebih dahulu.");
 
-      let btn = document.getElementById('btnSubmit');
-      btn.disabled = true;
-      btn.innerText = "Mengirim...";
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = "Mengirim...";
 
       let payload = {
         action: 'simpan',
@@ -133,19 +193,17 @@
           alert("Presensi Berhasil!");
           document.getElementById('nama').value = '';
           document.getElementById('asal').value = '';
-          document.getElementById('photoStatus').innerText = "Foto belum diambil";
-          document.getElementById('photoStatus').className = "text-danger d-block mt-1";
-          photoData = null;
+          resetCamera(); // Mengembalikan kamera ke posisi siap foto baru
         } else {
           alert("Gagal: " + res.message);
+          btnSubmit.disabled = false;
         }
-        btn.disabled = false;
-        btn.innerText = "Kirim Presensi";
+        btnSubmit.innerText = "Kirim Presensi";
       })
       .catch(err => {
         alert("Terjadi kesalahan koneksi.");
-        btn.disabled = false;
-        btn.innerText = "Kirim Presensi";
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = "Kirim Presensi";
       });
     });
 
