@@ -1,239 +1,139 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Presensi Acara</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+<script>
+  // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxtvfJUN1rGAcQ4e9kje5BYJgmg7DpgxVCJqVbRQcTkEzlT_PFQuM0aKhPyDTKFzdr2/exec";
+
+  let photoData = null;
+  let video = document.getElementById('webcam');
+  let previewImg = document.getElementById('previewImg');
+  let canvas = document.getElementById('canvas');
+  let btnCapture = document.getElementById('btnCapture');
+  let btnRetake = document.getElementById('btnRetake');
+  let photoStatus = document.getElementById('photoStatus');
+  let btnSubmit = document.getElementById('btnSubmit');
+  let autoRefreshInterval = null;
+
+  // Inisialisasi Kamera
+  function initCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => { video.srcObject = stream; })
+      .catch(err => alert("Gagal mengakses kamera: " + err));
+  }
+  initCamera();
+
+  // Kompresi Foto agar URL JSONP tidak terlalu panjang
+  function takeSnapshot() {
+    canvas.width = 320;
+    canvas.height = 240;
+    let context = canvas.getContext('2d');
+    context.translate(canvas.width, 0);
+    context.scale(-1, 1);
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    /* Container Kamera & Preview */
-    .camera-container {
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-      margin: 0 auto;
-      border-radius: 10px;
-      overflow: hidden;
-      background-color: #000;
+    // Kualitas diset ke 0.5 agar resolusi foto pas dikirim via URL GET
+    photoData = canvas.toDataURL('image/jpeg', 0.5);
+
+    previewImg.src = photoData;
+    previewImg.style.display = 'block';
+    video.style.display = 'none';
+
+    btnCapture.classList.add('d-none');
+    btnRetake.classList.remove('d-none');
+
+    photoStatus.innerText = "✓ Foto Berhasil Diambil";
+    photoStatus.className = "text-success d-block mt-1";
+    btnSubmit.disabled = false;
+  }
+
+  function resetCamera() {
+    photoData = null;
+    previewImg.style.display = 'none';
+    video.style.display = 'block';
+
+    btnRetake.classList.add('d-none');
+    btnCapture.classList.remove('d-none');
+
+    photoStatus.innerText = "Foto belum diambil";
+    photoStatus.className = "text-danger d-block mt-1";
+    btnSubmit.disabled = true;
+  }
+
+  // --- HELPER UTAMA JSONP ---
+  function executeJSONP(url, params, callbackName) {
+    const query = new URLSearchParams(params);
+    query.append('callback', callbackName);
+
+    const script = document.createElement('script');
+    script.src = `${url}?${query.toString()}`;
+    script.id = 'jsonp_' + callbackName;
+
+    // Bersihkan tag script lama jika ada
+    const oldScript = document.getElementById(script.id);
+    if (oldScript) oldScript.remove();
+
+    document.body.appendChild(script);
+  }
+
+  // --- 1. PROSES SUBMIT PRESENSI ---
+  document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!photoData) return alert("Silakan ambil foto selfie terlebih dahulu.");
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerText = "Mengirim...";
+
+    const params = {
+      action: 'simpan',
+      //namaAcara: document.getElementById('namaAcara').value,
+      nama: document.getElementById('nama').value,
+      asal: document.getElementById('asal').value,
+      image: photoData
+    };
+
+    // Panggil JSONP
+    executeJSONP(GAS_URL, params, 'onPresensiSubmitted');
+  });
+
+  // Callback dari Server setelah Submit
+  window.onPresensiSubmitted = function(response) {
+    if (response.status === 'success') {
+      alert("Presensi Berhasil Dikirim!");
+      document.getElementById('nama').value = '';
+      document.getElementById('asal').value = '';
+      resetCamera();
+    } else {
+      alert("Gagal menyimpan presensi: " + response.message);
     }
-    #webcam { width: 100%; transform: scaleX(-1); display: block; }
-    #previewImg { width: 100%; display: none; border-radius: 10px; }
-    #canvas { display: none; }
-    
-    .profile-img { width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 5px solid #0d6efd; }
-    .display-mode { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
-  </style>
-</head>
-<body class="p-3 p-md-5">
-
-  <div class="container">
-    <!-- Navigasi Mode >
-    <div class="d-flex justify-content-end mb-3">
-      <button class="btn btn-outline-secondary btn-sm me-2" onclick="switchMode('form')">Form Presensi</button>
-      <button class="btn btn-outline-primary btn-sm" onclick="switchMode('proyektor')">Tampilan Proyektor</button>
-    </div-->
-
-    <!-- TAMPILAN 1: FORM PRESENSI PESERTA -->
-    <div id="form-section">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card p-4">
-            <h3 class="text-center fw-bold mb-3 text-primary">Presensi Kehadiran</h3>
-            
-            <form id="attendanceForm">
-              <!--div class="mb-3">
-                <label class="form-label font-weight-bold">Nama Acara</label>
-                <input type="text" id="namaAcara" class="form-control" placeholder="Contoh: Seminar Digital 2026" required>
-            </div-->
-              <div class="mb-3">
-                <label class="form-label">Nama Lengkap</label>
-                <input type="text" id="nama" class="form-control" placeholder="Nama Anda" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">DPD Kab/Kota</label>
-                <input type="text" id="asal" class="form-control" placeholder="Masukkan Kab/Kota" required>
-              </div>
-              
-              <!-- SECTION FOTO SELFIE -->
-              <div class="mb-3 text-center">
-                <label class="form-label d-block">Foto Selfie</label>
-                
-                <div class="camera-container mb-2">
-                  <video id="webcam" autoplay playsinline></video>
-                  <img id="previewImg" alt="Hasil Foto">
-                  <canvas id="canvas"></canvas>
-                </div>
-
-                <!-- Tombol Aksi Kamera -->
-                <div>
-                  <button type="button" id="btnCapture" class="btn btn-sm btn-secondary" onclick="takeSnapshot()">📸 Ambil Foto</button>
-                  <button type="button" id="btnRetake" class="btn btn-sm btn-warning d-none" onclick="resetCamera()">🔄 Foto Ulang</button>
-                </div>
-                
-                <small id="photoStatus" class="text-danger d-block mt-1">Foto belum diambil</small>
-              </div>
-
-              <button type="submit" id="btnSubmit" class="btn btn-primary w-100 py-2" disabled>Kirim Presensi</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAMPILAN 2: DISPLAY PROYEKTOR -->
-    <div id="proyektor-section" class="display-mode d-none">
-      <div class="card p-5 text-center col-md-8 shadow-lg">
-        <h2 id="dispAcara" class="text-muted mb-4">Selamat Datang!</h2>
-        <div class="mb-3">
-          <img id="dispFoto" src="https://via.placeholder.com/220" class="profile-img shadow" alt="Foto Peserta">
-        </div>
-        <h1 id="dispNama" class="fw-bold text-dark display-5 mb-2">Menunggu Peserta...</h1>
-        <h3 id="dispAsal" class="text-primary mb-3">-</h3>
-        <p id="dispWaktu" class="text-muted small"></p>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxtvfJUN1rGAcQ4e9kje5BYJgmg7DpgxVCJqVbRQcTkEzlT_PFQuM0aKhPyDTKFzdr2/exec";
-
-    let photoData = null;
-    let video = document.getElementById('webcam');
-    let previewImg = document.getElementById('previewImg');
-    let canvas = document.getElementById('canvas');
-    let btnCapture = document.getElementById('btnCapture');
-    let btnRetake = document.getElementById('btnRetake');
-    let photoStatus = document.getElementById('photoStatus');
-    let btnSubmit = document.getElementById('btnSubmit');
-    let autoRefreshInterval = null;
-
-    // Inisialisasi Kamera
-    function initCamera() {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => { video.srcObject = stream; })
-        .catch(err => alert("Gagal mengakses kamera: " + err));
-    }
-
-    initCamera();
-
-    // Take Snapshot
-    function takeSnapshot() {
-      canvas.width = video.videoWidth || 320;
-      canvas.height = video.videoHeight || 240;
-      let context = canvas.getContext('2d');
-      context.translate(canvas.width, 0);
-      context.scale(-1, 1); // Mirroring foto agar tidak terbalik
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      
-      photoData = canvas.toDataURL('image/jpeg', 0.8);
-
-      // Tampilkan hasil preview & sembunyikan live video
-      previewImg.src = photoData;
-      previewImg.style.display = 'block';
-      video.style.display = 'none';
-
-      // Switch tombol
-      btnCapture.classList.add('d-none');
-      btnRetake.classList.remove('d-none');
-
-      // Update Status
-      photoStatus.innerText = "✓ Foto Berhasil Diambil";
-      photoStatus.className = "text-success d-block mt-1";
-      btnSubmit.disabled = false;
-    }
-
-    // Reset Kamera / Foto Ulang
-    function resetCamera() {
-      photoData = null;
-
-      // Sembunyikan preview & tampilkan live video kembali
-      previewImg.style.display = 'none';
-      video.style.display = 'block';
-
-      // Switch tombol
-      btnRetake.classList.add('d-none');
-      btnCapture.classList.remove('d-none');
-
-      // Reset Status
-      photoStatus.innerText = "Foto belum diambil";
-      photoStatus.className = "text-danger d-block mt-1";
-      btnSubmit.disabled = true;
-    }
-
-    // Submit Presensi via HTTP POST
-document.getElementById('attendanceForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (!photoData) return alert("Silakan ambil foto selfie terlebih dahulu.");
-
-  btnSubmit.disabled = true;
-  btnSubmit.innerText = "Mengirim...";
-
-  let payload = {
-    action: 'simpan',
-    namaAcara: document.getElementById('namaAcara').value,
-    nama: document.getElementById('nama').value,
-    asal: document.getElementById('asal').value,
-    image: photoData
+    btnSubmit.disabled = false;
+    btnSubmit.innerText = "Kirim Presensi";
   };
 
-  // Mengirim request dengan no-cors agar tidak diblokir browser
-  fetch(GAS_URL, {
-    method: 'POST',
-    mode: 'no-cors', 
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload)
-  })
-  .then(() => {
-    // Dengan no-cors, respon dianggap sukses jika tidak ada error jaringan
-    alert("Presensi Berhasil Dikirim!");
-    document.getElementById('nama').value = '';
-    document.getElementById('asal').value = '';
-    resetCamera();
-    btnSubmit.disabled = false;
-    btnSubmit.innerText = "Kirim Presensi";
-  })
-  .catch(err => {
-    alert("Terjadi kesalahan jaringan/koneksi.");
-    console.error(err);
-    btnSubmit.disabled = false;
-    btnSubmit.innerText = "Kirim Presensi";
-  });
-});
+  // --- 2. PROSES UPDATE PROYEKTOR ---
+  function fetchLastParticipant() {
+    executeJSONP(GAS_URL, { action: 'getLast' }, 'onGetLastParticipant');
+  }
 
-    // Navigasi Tampilan
-    function switchMode(mode) {
-      if (mode === 'proyektor') {
-        document.getElementById('form-section').classList.add('d-none');
-        document.getElementById('proyektor-section').classList.remove('d-none');
-        fetchLastParticipant();
-        autoRefreshInterval = setInterval(fetchLastParticipant, 3000);
-      } else {
-        document.getElementById('proyektor-section').classList.add('d-none');
-        document.getElementById('form-section').classList.remove('d-none');
-        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-      }
+  // Callback dari Server untuk Tampilan Proyektor
+  window.onGetLastParticipant = function(data) {
+    if (data && data.status === 'success') {
+      document.getElementById('dispAcara').innerText = data.namaAcara || "Selamat Datang";
+      document.getElementById('dispNama').innerText = data.nama;
+      document.getElementById('dispAsal').innerText = data.asal;
+      document.getElementById('dispFoto').src = data.photoUrl;
+      document.getElementById('dispWaktu').innerText = "Hadir pada: " + data.waktu;
     }
+  };
 
-    // Fetch Peserta Terakhir via HTTP GET
-    function fetchLastParticipant() {
-      fetch(GAS_URL)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.status === 'success') {
-            document.getElementById('dispAcara').innerText = data.namaAcara || "Selamat Datang";
-            document.getElementById('dispNama').innerText = data.nama;
-            document.getElementById('dispAsal').innerText = data.asal;
-            document.getElementById('dispFoto').src = data.photoUrl;
-            document.getElementById('dispWaktu').innerText = "Hadir pada: " + data.waktu;
-          }
-        })
-        .catch(err => console.error("Error fetching data: ", err));
+  // Navigasi Tampilan
+  function switchMode(mode) {
+    if (mode === 'proyektor') {
+      document.getElementById('form-section').classList.add('d-none');
+      document.getElementById('proyektor-section').classList.remove('d-none');
+      fetchLastParticipant();
+      autoRefreshInterval = setInterval(fetchLastParticipant, 3000);
+    } else {
+      document.getElementById('proyektor-section').classList.add('d-none');
+      document.getElementById('form-section').classList.remove('d-none');
+      if (autoRefreshInterval) clearInterval(autoRefreshInterval);
     }
-  </script>
-</body>
-</html>
+  }
+</script>
