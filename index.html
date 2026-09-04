@@ -1,253 +1,168 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Presensi Acara</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    
-    /* Container Kamera & Preview */
-    .camera-container {
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-      margin: 0 auto;
-      border-radius: 10px;
-      overflow: hidden;
-      background-color: #000;
-    }
-    #webcam { width: 100%; transform: scaleX(-1); display: block; }
-    #previewImg { width: 100%; display: none; border-radius: 10px; }
-    #canvas { display: none; }
-    
-    .profile-img { width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 5px solid #0d6efd; }
-    .display-mode { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Presensi Mandiri Real-Time</title>
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
 </head>
-<body class="p-3 p-md-5">
+<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-between overflow-x-hidden font-sans">
 
-  <div class="container">
-    <!-- Navigasi Mode -->
-    <div class="d-flex justify-content-end mb-3">
-      <button class="btn btn-outline-secondary btn-sm me-2" onclick="switchMode('form')">Form Presensi</button>
-      <button class="btn btn-outline-primary btn-sm" onclick="switchMode('proyektor')">Tampilan Proyektor</button>
+    <!-- ==================== 1. MODE TAMPILAN PROYEKTOR ==================== -->
+    <div id="mode-proyektor" class="hidden flex-grow flex flex-col justify-between min-h-screen">
+        <header class="w-full bg-slate-800/40 backdrop-blur-md py-8 text-center border-b border-slate-800 shadow-xl">
+            <h1 class="text-4xl md:text-5xl font-black text-white tracking-wider drop-shadow-md">SELAMAT DATANG PESERTA</h1>
+            <p class="text-blue-400 text-sm md:text-base font-medium tracking-widest uppercase mt-1">Silakan Lakukan Presensi Mandiri & Selfie</p>
+        </header>
+
+        <main class="flex-grow flex items-center justify-center p-6">
+            <div id="welcome-card" class="bg-slate-800/90 border border-slate-700 rounded-3xl p-8 max-w-4xl w-full flex flex-col md:flex-row gap-10 items-center shadow-2xl bg-gradient-to-br from-slate-800 to-slate-950 hidden">
+                <div class="w-72 h-72 md:w-96 md:h-96 rounded-2xl overflow-hidden bg-slate-700 border-4 border-blue-500 shadow-2xl relative flex-shrink-0 animate__animated animate__zoomIn">
+                    <img id="peserta-foto" src="" alt="Selfie" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-grow text-center md:text-left space-y-5 animate__animated animate__fadeInRight">
+                    <div class="inline-block bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-widest">Baru Saja Hadir 🎉</div>
+                    <h2 id="peserta-nama" class="text-4xl md:text-6xl font-black text-white leading-tight tracking-wide truncate">NAMA PESERTA</h2>
+                    <p class="text-slate-400 text-xl md:text-2xl font-medium">Asal: <span id="peserta-asal" class="text-blue-400 font-bold">INSTANSI/DAERAH</span></p>
+                    <div class="pt-4 border-t border-slate-800 text-xs text-slate-500" id="peserta-waktu">Waktu Kehadiran: --:--</div>
+                </div>
+            </div>
+
+            <div id="standby-screen" class="text-center space-y-4">
+                <div class="text-7xl animate-bounce">📸</div>
+                <h2 class="text-2xl font-bold text-slate-400">Menunggu Presensi Masuk...</h2>
+                <p class="text-slate-500 text-sm">Layar otomatis diperbarui begitu ada peserta yang mengirim data.</p>
+            </div>
+        </main>
     </div>
 
-    <!-- TAMPILAN 1: FORM PRESENSI PESERTA -->
-    <div id="form-section">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card p-4">
-            <h3 class="text-center fw-bold mb-3 text-primary">Presensi Kehadiran</h3>
-            
-            <form id="attendanceForm">
-              <div class="mb-3">
-                <label class="form-label font-weight-bold">Nama Acara</label>
-                <input type="text" id="namaAcara" class="form-control" placeholder="Contoh: Seminar Digital" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Nama Lengkap</label>
-                <input type="text" id="nama" class="form-control" placeholder="Nama Anda" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Asal / Instansi</label>
-                <input type="text" id="asal" class="form-control" placeholder="Nama Perusahaan / Komunitas / Kota" required>
-              </div>
-              
-              <!-- SECTION FOTO SELFIE -->
-              <div class="mb-3 text-center">
-                <label class="form-label d-block">Foto Selfie</label>
-                
-                <div class="camera-container mb-2">
-                  <video id="webcam" autoplay playsinline></video>
-                  <img id="previewImg" alt="Hasil Foto">
-                  <canvas id="canvas"></canvas>
-                </div>
+    <!-- ==================== 2. MODE FORM INPUT PESERTA ==================== -->
+    <div id="mode-input" class="hidden flex-grow flex items-center justify-center p-4 my-6">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-6">
+            <div class="text-center">
+                <h2 class="text-2xl font-extrabold text-white">Form Presensi Mandiri</h2>
+                <p class="text-sm text-slate-400 mt-1">Silakan isi identitas dan ambil foto selfie Anda</p>
+            </div>
 
-                <!-- Tombol Aksi Kamera -->
+            <form id="form-presensi" class="space-y-4">
                 <div>
-                  <button type="button" id="btnCapture" class="btn btn-sm btn-secondary" onclick="takeSnapshot()">📸 Ambil Foto</button>
-                  <button type="button" id="btnRetake" class="btn btn-sm btn-warning d-none" onclick="resetCamera()">🔄 Foto Ulang</button>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Lengkap</label>
+                    <input type="text" id="input-nama" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="Masukkan nama Anda">
                 </div>
-                
-                <small id="photoStatus" class="text-danger d-block mt-1">Foto belum diambil</small>
-              </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Asal Instansi / Daerah</label>
+                    <input type="text" id="input-asal" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="Contoh: Universitas A / Jakarta">
+                </div>
 
-              <button type="submit" id="btnSubmit" class="btn btn-primary w-100 py-2" disabled>Kirim Presensi</button>
+                <!-- Area Kamera Selfie -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Foto Selfie</label>
+                    <div class="relative w-full h-64 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden flex items-center justify-center">
+                        <video id="video" autoplay playsinline class="w-full h-full object-cover"></video>
+                        <canvas id="canvas" class="hidden w-full h-full object-cover"></canvas>
+                        <img id="hasil-capture" class="hidden w-full h-full object-cover">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" id="btn-ambil" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">📸 Ambil Foto</button>
+                        <button type="button" id="btn-ulang" class="hidden w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">🔄 Foto Ulang</button>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-xl transition-colors shadow-lg tracking-wide">KIRIM PRESENSI</button>
             </form>
-          </div>
         </div>
-      </div>
     </div>
 
-    <!-- TAMPILAN 2: DISPLAY PROYEKTOR -->
-    <div id="proyektor-section" class="display-mode d-none">
-      <div class="card p-5 text-center col-md-8 shadow-lg">
-        <h2 id="dispAcara" class="text-muted mb-4">Selamat Datang!</h2>
-        <div class="mb-3">
-          <img id="dispFoto" src="https://via.placeholder.com/220" class="profile-img shadow" alt="Foto Peserta">
+    <!-- Footer Status -->
+    <footer class="w-full bg-slate-950 py-3 px-6 text-center text-xs text-slate-600 border-t border-slate-800 flex justify-between items-center">
+        <div>Sistem Presensi Mandiri v2.5</div>
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            <span id="status-koneksi" class="text-slate-400">Menghubungkan...</span>
         </div>
-        <h1 id="dispNama" class="fw-bold text-dark display-5 mb-2">Menunggu Peserta...</h1>
-        <h3 id="dispAsal" class="text-primary mb-3">-</h3>
-        <p id="dispWaktu" class="text-muted small"></p>
-      </div>
-    </div>
+    </footer>
 
-  </div>
+    <script>
+        // ==================== PASTE WEB APP URL DI SINI ====================
+        const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxtvfJUN1rGAcQ4e9kje5BYJgmg7DpgxVCJqVbRQcTkEzlT_PFQuM0aKhPyDTKFzdr2/exec"; 
+        // ===================================================================
 
-  <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxtvfJUN1rGAcQ4e9kje5BYJgmg7DpgxVCJqVbRQcTkEzlT_PFQuM0aKhPyDTKFzdr2/exec";
+        const urlParams = new URLSearchParams(window.location.search);
+        const isProyektor = urlParams.get('view') === 'proyektor';
 
-    let photoData = null;
-    let video, previewImg, canvas, btnCapture, btnRetake, photoStatus, btnSubmit;
-    let autoRefreshInterval = null;
+        let videoStream = null;
+        let fotoBase64Str = "";
+        let lastCheckedId = null;
 
-    // Jalankan inisialisasi SETELAH seluruh DOM siap
-    document.addEventListener('DOMContentLoaded', function() {
-      video = document.getElementById('webcam');
-      previewImg = document.getElementById('previewImg');
-      canvas = document.getElementById('canvas');
-      btnCapture = document.getElementById('btnCapture');
-      btnRetake = document.getElementById('btnRetake');
-      photoStatus = document.getElementById('photoStatus');
-      btnSubmit = document.getElementById('btnSubmit');
+        // Inisialisasi Tampilan Berdasarkan Parameter URL
+        if (isProyektor) {
+            document.getElementById('mode-proyektor').classList.remove('hidden');
+            document.getElementById('status-koneksi').innerText = "Mode Proyektor Aktif";
+            setInterval(periksaPresensiTerbaru, 3000);
+            periksaPresensiTerbaru();
+        } else {
+            document.getElementById('mode-input').classList.remove('hidden');
+            document.getElementById('status-koneksi').innerText = "Form Siap Digunakan";
+            aktifkanKamera();
+        }
 
-      initCamera();
-      
-      // Listener Form Submit
-      document.getElementById('attendanceForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (!photoData) return alert("Silakan ambil foto selfie terlebih dahulu.");
+        // --- SCRIPT FORM INPUT PESERTA ---
+        async function aktifkanKamera() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+                document.getElementById('video').srcObject = videoStream;
+            } catch (err) {
+                alert("Gagal mengakses kamera. Pastikan memberikan izin akses kamera.");
+                console.error(err);
+            }
+        }
 
-        btnSubmit.disabled = true;
-        btnSubmit.innerText = "Mengirim...";
-
-        const params = {
-          action: 'simpan',
-          namaAcara: document.getElementById('namaAcara').value,
-          nama: document.getElementById('nama').value,
-          asal: document.getElementById('asal').value,
-          image: photoData
-        };
-
-        executeJSONP(GAS_URL, params, 'onPresensiSubmitted');
-      });
-    });
-
-    // Inisialisasi Kamera
-    function initCamera() {
-      if (!video) return;
-      const constraints = {
-        video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }
-      };
-
-      navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => { video.srcObject = stream; })
-        .catch(err => {
-          console.error("Detail Error Kamera:", err);
-          alert("Gagal mengakses kamera: " + err.message + "\n\nPastikan menggunakan HTTPS dan memberikan izin akses kamera.");
+        document.getElementById('btn-ambil').addEventListener('click', () => {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const img = document.getElementById('hasil-capture');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            fotoBase64Str = canvas.toDataURL('image/jpeg');
+            
+            img.src = fotoBase64Str;
+            video.classList.add('hidden');
+            img.classList.remove('hidden');
+            
+            document.getElementById('btn-ambil').classList.add('hidden');
+            document.getElementById('btn-ulang').classList.remove('hidden');
         });
-    }
 
-    // Ambil Foto
-    function takeSnapshot() {
-      canvas.width = 320;
-      canvas.height = 240;
-      let context = canvas.getContext('2d');
-      context.translate(canvas.width, 0);
-      context.scale(-1, 1);
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      
-      photoData = canvas.toDataURL('image/jpeg', 0.5);
+        document.getElementById('btn-ulang').addEventListener('click', () => {
+            document.getElementById('video').classList.remove('hidden');
+            document.getElementById('hasil-capture').classList.add('hidden');
+            document.getElementById('btn-ambil').classList.remove('hidden');
+            document.getElementById('btn-ulang').classList.add('hidden');
+            fotoBase64Str = "";
+        });
 
-      previewImg.src = photoData;
-      previewImg.style.display = 'block';
-      video.style.display = 'none';
+        document.getElementById('form-presensi').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!fotoBase64Str) {
+                alert("Silakan ambil foto selfie terlebih dahulu!");
+                return;
+            }
 
-      btnCapture.classList.add('d-none');
-      btnRetake.classList.remove('d-none');
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.disabled = true;
+            btnSubmit.innerText = "Mengirim data... Mohon Tunggu";
 
-      photoStatus.innerText = "✓ Foto Berhasil Diambil";
-      photoStatus.className = "text-success d-block mt-1";
-      btnSubmit.disabled = false;
-    }
+            const payload = {
+                nama: document.getElementById('input-nama').value,
+                asal: document.getElementById('input-asal').value,
+                fotoBase64: fotoBase64Str
+            };
 
-    // Reset Kamera / Ambil Ulang
-    function resetCamera() {
-      photoData = null;
-      previewImg.style.display = 'none';
-      video.style.display = 'block';
-
-      btnRetake.classList.add('d-none');
-      btnCapture.classList.remove('d-none');
-
-      photoStatus.innerText = "Foto belum diambil";
-      photoStatus.className = "text-danger d-block mt-1";
-      btnSubmit.disabled = true;
-    }
-
-    // Helper JSONP Exec
-    function executeJSONP(url, params, callbackName) {
-      const query = new URLSearchParams(params);
-      query.append('callback', callbackName);
-
-      const script = document.createElement('script');
-      script.src = `${url}?${query.toString()}`;
-      script.id = 'jsonp_' + callbackName;
-
-      const oldScript = document.getElementById(script.id);
-      if (oldScript) oldScript.remove();
-
-      document.body.appendChild(script);
-    }
-
-    // Callback Submit JSONP
-    window.onPresensiSubmitted = function(response) {
-      if (response.status === 'success') {
-        alert("Presensi Berhasil Dikirim!");
-        document.getElementById('nama').value = '';
-        document.getElementById('asal').value = '';
-        resetCamera();
-      } else {
-        alert("Gagal menyimpan presensi: " + response.message);
-      }
-      btnSubmit.disabled = false;
-      btnSubmit.innerText = "Kirim Presensi";
-    };
-
-    // Navigasi Mode Tampilan
-    function switchMode(mode) {
-      if (mode === 'proyektor') {
-        document.getElementById('form-section').classList.add('d-none');
-        document.getElementById('proyektor-section').classList.remove('d-none');
-        fetchLastParticipant();
-        autoRefreshInterval = setInterval(fetchLastParticipant, 3000);
-      } else {
-        document.getElementById('proyektor-section').classList.add('d-none');
-        document.getElementById('form-section').classList.remove('d-none');
-        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-      }
-    }
-
-    // Fetch Proyektor
-    function fetchLastParticipant() {
-      executeJSONP(GAS_URL, { action: 'getLast' }, 'onGetLastParticipant');
-    }
-
-    // Callback Proyektor JSONP
-    window.onGetLastParticipant = function(data) {
-      if (data && data.status === 'success') {
-        document.getElementById('dispAcara').innerText = data.namaAcara || "Selamat Datang";
-        document.getElementById('dispNama').innerText = data.nama;
-        document.getElementById('dispAsal').innerText = data.asal;
-        document.getElementById('dispFoto').src = data.photoUrl;
-        document.getElementById('dispWaktu').innerText = "Hadir pada: " + data.waktu;
-      }
-    };
-  </script>
-</body>
-</html>
+            try {
+                const respon = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Menghindari kendala kebijakan CORS Google Apps Script
