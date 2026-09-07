@@ -1,168 +1,104 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Presensi Mandiri Real-Time</title>
-    <script src="https://tailwindcss.com"></script>
-    <link href="https://cloudflare.com" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" 
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Presensi Kehadiran
+</title>
+
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-between overflow-x-hidden font-sans">
 
-    <!-- ==================== 1. MODE TAMPILAN PROYEKTOR ==================== -->
-    <div id="mode-proyektor" class="hidden flex-grow flex flex-col justify-between min-h-screen">
-        <header class="w-full bg-slate-800/40 backdrop-blur-md py-8 text-center border-b border-slate-800 shadow-xl">
-            <h1 class="text-4xl md:text-5xl font-black text-white tracking-wider drop-shadow-md">SELAMAT DATANG PESERTA</h1>
-            <p class="text-blue-400 text-sm md:text-base font-medium tracking-widest uppercase mt-1">Silakan Lakukan Presensi Mandiri & Selfie</p>
-        </header>
 
-        <main class="flex-grow flex items-center justify-center p-6">
-            <div id="welcome-card" class="bg-slate-800/90 border border-slate-700 rounded-3xl p-8 max-w-4xl w-full flex flex-col md:flex-row gap-10 items-center shadow-2xl bg-gradient-to-br from-slate-800 to-slate-950 hidden">
-                <div class="w-72 h-72 md:w-96 md:h-96 rounded-2xl overflow-hidden bg-slate-700 border-4 border-blue-500 shadow-2xl relative flex-shrink-0 animate__animated animate__zoomIn">
-                    <img id="peserta-foto" src="" alt="Selfie" class="w-full h-full object-cover">
-                </div>
-                <div class="flex-grow text-center md:text-left space-y-5 animate__animated animate__fadeInRight">
-                    <div class="inline-block bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-widest">Baru Saja Hadir 🎉</div>
-                    <h2 id="peserta-nama" class="text-4xl md:text-6xl font-black text-white leading-tight tracking-wide truncate">NAMA PESERTA</h2>
-                    <p class="text-slate-400 text-xl md:text-2xl font-medium">Asal: <span id="peserta-asal" class="text-blue-400 font-bold">INSTANSI/DAERAH</span></p>
-                    <div class="pt-4 border-t border-slate-800 text-xs text-slate-500" id="peserta-waktu">Waktu Kehadiran: --:--</div>
-                </div>
-            </div>
+<body>
+<div class="container">
 
-            <div id="standby-screen" class="text-center space-y-4">
-                <div class="text-7xl animate-bounce">📸</div>
-                <h2 class="text-2xl font-bold text-slate-400">Menunggu Presensi Masuk...</h2>
-                <p class="text-slate-500 text-sm">Layar otomatis diperbarui begitu ada peserta yang mengirim data.</p>
-            </div>
-        </main>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>
+            Presensi Kehadiran
+        </h1>
+        <p>
+            Silakan isi data dan ambil foto selfie
+        </p>
     </div>
 
-    <!-- ==================== 2. MODE FORM INPUT PESERTA ==================== -->
-    <div id="mode-input" class="hidden flex-grow flex items-center justify-center p-4 my-6">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-6">
-            <div class="text-center">
-                <h2 class="text-2xl font-extrabold text-white">Form Presensi Mandiri</h2>
-                <p class="text-sm text-slate-400 mt-1">Silakan isi identitas dan ambil foto selfie Anda</p>
-            </div>
-
-            <form id="form-presensi" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Lengkap</label>
-                    <input type="text" id="input-nama" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="Masukkan nama Anda">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Asal Instansi / Daerah</label>
-                    <input type="text" id="input-asal" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="Contoh: Universitas A / Jakarta">
-                </div>
-
-                <!-- Area Kamera Selfie -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Foto Selfie</label>
-                    <div class="relative w-full h-64 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden flex items-center justify-center">
-                        <video id="video" autoplay playsinline class="w-full h-full object-cover"></video>
-                        <canvas id="canvas" class="hidden w-full h-full object-cover"></canvas>
-                        <img id="hasil-capture" class="hidden w-full h-full object-cover">
-                    </div>
-                    <div class="flex gap-2">
-                        <button type="button" id="btn-ambil" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">📸 Ambil Foto</button>
-                        <button type="button" id="btn-ulang" class="hidden w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">🔄 Foto Ulang</button>
-                    </div>
-                </div>
-
-                <button type="submit" id="btn-submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-xl transition-colors shadow-lg tracking-wide">KIRIM PRESENSI</button>
-            </form>
-        </div>
+    <!-- FORM -->
+    <div class="form-group">
+        <label>
+            Nama Lengkap
+        </label>
+        <input 
+        type="text"
+        id="nama"
+        placeholder="Masukkan nama">
     </div>
 
-    <!-- Footer Status -->
-    <footer class="w-full bg-slate-950 py-3 px-6 text-center text-xs text-slate-600 border-t border-slate-800 flex justify-between items-center">
-        <div>Sistem Presensi Mandiri v2.5</div>
-        <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-            <span id="status-koneksi" class="text-slate-400">Menghubungkan...</span>
+    <div class="form-group">
+        <label>
+            Asal Lembaga / Instansi
+        </label>
+
+        <input 
+        type="text"
+        id="asal"
+        placeholder="Masukkan asal lembaga">
+    </div>
+
+    <!-- CAMERA -->
+    <div class="form-group">
+
+        <label>
+            Foto Selfie
+        </label>
+
+        <div class="camera-box">
+            <video 
+            id="video"
+            autoplay
+            playsinline>
+            </video>
+
+            <canvas 
+            id="canvas">
+            </canvas>
         </div>
-    </footer>
 
-    <script>
-        // ==================== PASTE WEB APP URL DI SINI ====================
-        const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxtvfJUN1rGAcQ4e9kje5BYJgmg7DpgxVCJqVbRQcTkEzlT_PFQuM0aKhPyDTKFzdr2/exec"; 
-        // ===================================================================
+        <img 
+        id="preview"
+        class="preview">
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const isProyektor = urlParams.get('view') === 'proyektor';
+    </div>
 
-        let videoStream = null;
-        let fotoBase64Str = "";
-        let lastCheckedId = null;
+    <!-- BUTTON -->
 
-        // Inisialisasi Tampilan Berdasarkan Parameter URL
-        if (isProyektor) {
-            document.getElementById('mode-proyektor').classList.remove('hidden');
-            document.getElementById('status-koneksi').innerText = "Mode Proyektor Aktif";
-            setInterval(periksaPresensiTerbaru, 3000);
-            periksaPresensiTerbaru();
-        } else {
-            document.getElementById('mode-input').classList.remove('hidden');
-            document.getElementById('status-koneksi').innerText = "Form Siap Digunakan";
-            aktifkanKamera();
-        }
+    <button 
+    id="btnCamera"
+    class="btn-camera">
 
-        // --- SCRIPT FORM INPUT PESERTA ---
-        async function aktifkanKamera() {
-            try {
-                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
-                document.getElementById('video').srcObject = videoStream;
-            } catch (err) {
-                alert("Gagal mengakses kamera. Pastikan memberikan izin akses kamera.");
-                console.error(err);
-            }
-        }
+        Ambil Foto
 
-        document.getElementById('btn-ambil').addEventListener('click', () => {
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            const img = document.getElementById('hasil-capture');
-            
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            fotoBase64Str = canvas.toDataURL('image/jpeg');
-            
-            img.src = fotoBase64Str;
-            video.classList.add('hidden');
-            img.classList.remove('hidden');
-            
-            document.getElementById('btn-ambil').classList.add('hidden');
-            document.getElementById('btn-ulang').classList.remove('hidden');
-        });
+    </button>
 
-        document.getElementById('btn-ulang').addEventListener('click', () => {
-            document.getElementById('video').classList.remove('hidden');
-            document.getElementById('hasil-capture').classList.add('hidden');
-            document.getElementById('btn-ambil').classList.remove('hidden');
-            document.getElementById('btn-ulang').classList.add('hidden');
-            fotoBase64Str = "";
-        });
+    <button 
+    id="btnSubmit"
+    class="btn-submit">
 
-        document.getElementById('form-presensi').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!fotoBase64Str) {
-                alert("Silakan ambil foto selfie terlebih dahulu!");
-                return;
-            }
+        Kirim Presensi
 
-            const btnSubmit = document.getElementById('btn-submit');
-            btnSubmit.disabled = true;
-            btnSubmit.innerText = "Mengirim data... Mohon Tunggu";
+    </button>
 
-            const payload = {
-                nama: document.getElementById('input-nama').value,
-                asal: document.getElementById('input-asal').value,
-                fotoBase64: fotoBase64Str
-            };
+    <div class="loading"
+    id="loading">
 
-            try {
-                const respon = await fetch(APPS_SCRIPT_WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Menghindari kendala kebijakan CORS Google Apps Script
+        Mengirim data...
+
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
