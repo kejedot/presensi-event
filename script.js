@@ -120,9 +120,40 @@ function ambilFoto(){
 
 // tombol kamera
 
-btnCamera.onclick =
-ambilFoto;
+btnCapture.onclick = function () {
 
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    fotoBase64 = canvas.toDataURL("image/jpeg", 0.9);
+
+    previewFoto.src = fotoBase64;
+    previewFoto.style.display = "block";
+    video.style.display = "none";
+
+    btnCapture.innerHTML = "📷 Ambil Ulang";
+    btnRetake.style.display = "none";
+    btnSubmit.disabled = false;
+}
+
+btnCapture.onclick = function () {
+
+    if (previewFoto.style.display == "block") {
+
+        previewFoto.style.display = "none";
+        video.style.display = "block";
+
+        btnCapture.innerHTML = "📸 Ambil Foto";
+        btnSubmit.disabled = true;
+
+        return;
+    }
+
+    // proses mengambil foto
+}
 
 // =================================
 // KIRIM PRESENSI
