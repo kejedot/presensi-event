@@ -1,148 +1,124 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Presensi Kehadiran</title>
 
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
 <div class="container">
 
-    <div class="card">
+    <h1>Presensi Kehadiran</h1>
+    <p class="subtitle">
+        Silakan isi data dan ambil foto selfie
+    </p>
 
-        <div class="header">
+    <!-- FORM -->
 
-            <h1>Presensi Kehadiran</h1>
+    <div class="form-group">
 
-            <p>Silakan isi data dan ambil foto selfie</p>
+        <label>Nama Lengkap</label>
 
-        </div>
+        <input
+            type="text"
+            id="nama"
+            placeholder="Masukkan nama lengkap"
+            autocomplete="off"
+            required>
 
+    </div>
 
-        <div class="form-group">
+    <div class="form-group">
 
-            <label>Nama Lengkap</label>
+        <label>Asal / Instansi</label>
 
-            <input
-                type="text"
-                id="nama"
-                placeholder="Masukkan nama lengkap">
+        <input
+            type="text"
+            id="asal"
+            placeholder="Masukkan asal lembaga"
+            autocomplete="off"
+            required>
 
-        </div>
+    </div>
 
+    <!-- AREA KAMERA -->
 
+    <div class="camera-wrapper">
 
-        <div class="form-group">
+        <!-- Kamera langsung aktif -->
 
-            <label>Asal DPD</label>
+        <video
+            id="video"
+            autoplay
+            playsinline
+            muted>
+        </video>
 
-            <input
-                type="text"
-                id="asal"
-                placeholder="Masukkan Nama Kab/Kota">
+        <!-- Preview setelah foto -->
 
-        </div>
+        <img
+            id="previewFoto"
+            alt="Preview Foto">
 
+        <!-- Canvas tersembunyi -->
 
+        <canvas
+            id="canvas"
+            style="display:none;">
+        </canvas>
 
-        <div class="camera-container">
+    </div>
 
-            <video
-                id="video"
-                autoplay
-                muted
-                playsinline>
-            </video>
+    <!-- Tombol -->
 
-            <canvas id="canvas"></canvas>
+    <div class="button-group">
 
-            <img
-                id="preview"
-                alt="Preview Foto">
+        <button
+            id="btnCapture"
+            type="button">
 
-        </div>
+            📸 Ambil Foto
 
+        </button>
 
+        <button
+            id="btnRetake"
+            type="button"
+            disabled>
 
-        <div class="button-group">
+            🔄 Ulangi Foto
 
-            <button
-                id="btnOpenCamera"
-                class="btn btn-primary">
+        </button>
 
-                📷 Buka Kamera
+        <button
+            id="btnSubmit"
+            type="button"
+            disabled>
 
-            </button>
+            ✅ Kirim Presensi
 
+        </button>
 
-            <button
-                id="btnCapture"
-                class="btn btn-warning"
-                disabled>
+    </div>
 
-                📸 Ambil Foto
+    <!-- Loading -->
 
-            </button>
+    <div
+        id="loading"
+        style="display:none;">
 
-
-            <button
-                id="btnRetake"
-                class="btn btn-secondary"
-                disabled>
-
-                🔄 Ulangi Foto
-
-            </button>
-
-
-            <button
-                id="btnSubmit"
-                class="btn btn-success"
-                disabled>
-
-                ✅ Kirim Presensi
-
-            </button>
-
-        </div>
-
-
-
-        <div
-            id="loading"
-            class="loading">
-
-            <div class="spinner"></div>
-
-            <span>Mengirim data...</span>
-
-        </div>
-
-
-
-        <div
-            id="message"
-            class="message">
-
-        </div>
+        <p>Mengirim data...</p>
 
     </div>
 
 </div>
 
-
 <script src="script.js"></script>
 
 </body>
-
 </html>
-```
