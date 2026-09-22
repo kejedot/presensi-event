@@ -268,3 +268,107 @@ footer{
     font-size:12px;
 
 }
+
+
+/* =====================================
+   PANDUAN FOTO PRESENSI RESMI
+===================================== */
+
+
+.photo-wrapper{
+
+    width:100%;
+
+}
+
+
+
+.face-guide{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    pointer-events:none;
+
+}
+
+
+
+.face-circle{
+
+
+    width:65%;
+
+    aspect-ratio:3/4;
+
+
+    border:3px dashed rgba(255,255,255,.8);
+
+
+    border-radius:50%;
+
+
+}
+
+
+
+
+.photo-guide{
+
+
+    margin-top:15px;
+
+
+    background:#f8fafc;
+
+
+    border-radius:14px;
+
+
+    padding:12px;
+
+
+    font-size:13px;
+
+
+    color:#475569;
+
+
+}
+
+
+
+.photo-guide strong{
+
+
+    color:#1e293b;
+
+}
+
+
+
+.photo-guide ul{
+
+
+    margin:8px 0 0 18px;
+
+    padding:0;
+
+
+}
+
+
+
+.photo-guide li{
+
+
+    margin-bottom:5px;
+
+}
