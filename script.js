@@ -258,91 +258,58 @@ startCamera();
 // ==========================================
 
 
-photoBtn.addEventListener(
-"click",
-
-function(){
-
-
+photoBtn.addEventListener("click", function(){
 
     if(photoData){
-
-
-        // jika sudah ada foto
-        // tombol menjadi foto ulang
-
-
         resetPhoto();
-
-
         return;
-
-
     }
-
-
-
 
     const context = canvas.getContext("2d");
 
+    const targetWidth = 900;
+    const targetHeight = 1200;
+    const targetRatio = targetWidth / targetHeight; // 0.75 = 3:4
 
+    const sourceWidth = camera.videoWidth;
+    const sourceHeight = camera.videoHeight;
+    const sourceRatio = sourceWidth / sourceHeight;
 
-    const width = 900;
+    let sx, sy, sWidth, sHeight;
 
-    const height = 1200;
+    // Jika video lebih lebar dari rasio target, crop sisi kiri-kanan
+    if(sourceRatio > targetRatio){
+        sHeight = sourceHeight;
+        sWidth = sourceHeight * targetRatio;
+        sx = (sourceWidth - sWidth) / 2;
+        sy = 0;
+    }
+    // Jika video lebih tinggi dari rasio target, crop atas-bawah
+    else{
+        sWidth = sourceWidth;
+        sHeight = sourceWidth / targetRatio;
+        sx = 0;
+        sy = (sourceHeight - sHeight) / 2;
+    }
 
-
-    canvas.width = width;
-
-    canvas.height = height;
-
-
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
 
     context.drawImage(
-
         camera,
-
-        0,
-
-        0,
-
-        width,
-
-        height
-
+        sx, sy, sWidth, sHeight,   // area sumber yang diambil
+        0, 0, targetWidth, targetHeight // area output canvas
     );
 
-
-
-
-    photoData = canvas.toDataURL(
-        "image/jpeg",
-        0.8
-    );
-
-
+    photoData = canvas.toDataURL("image/jpeg", 0.9);
 
     preview.src = photoData;
+    preview.style.display = "block";
 
+    photoBtn.innerHTML = "🔄 Foto Ulang";
+    photoBtn.style.background = "#f97316";
 
-    preview.style.display="block";
-
-
-
-    photoBtn.innerHTML =
-    "🔄 Foto Ulang";
-
-
-
-    photoBtn.style.background =
-    "#f97316";
-
-
-
-    submitBtn.disabled=false;
-
-
-
+    submitBtn.disabled = false;
 });
 
 
