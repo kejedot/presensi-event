@@ -126,7 +126,7 @@ async function startCamera(){
                 facingMode:"user",
 
                 width:{
-                    ideal:720
+                    ideal:900
                 },
 
                 height:{
@@ -210,9 +210,14 @@ function(){
 
 
 
-    canvas.width = camera.videoWidth;
+    const width = 900;
 
-    canvas.height = camera.videoHeight;
+    const height = 1200;
+
+
+    canvas.width = width;
+
+    canvas.height = height;
 
 
 
@@ -224,9 +229,9 @@ function(){
 
         0,
 
-        canvas.width,
+        width,
 
-        canvas.height
+        height
 
     );
 
