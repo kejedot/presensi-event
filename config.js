@@ -10,6 +10,10 @@ const EVENT_CONFIG = {
     // IDENTITAS APLIKASI
     // ======================================
 
+
+    kodeAcara:
+    "WSek-2026-001",
+    
     namaAplikasi:
     "PRESENSI DIGITAL",
 
