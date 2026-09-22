@@ -26,6 +26,51 @@ const namaInput = document.getElementById("nama");
 const kotaInput = document.getElementById("kota");
 
 
+// ==========================================
+// DATA KABUPATEN/KOTA JAWA TENGAH
+// ==========================================
+
+
+const jawaTengah = [
+
+"Kabupaten Banjarnegara",
+"Kabupaten Banyumas",
+"Kabupaten Batang",
+"Kabupaten Blora",
+"Kabupaten Boyolali",
+"Kabupaten Brebes",
+"Kabupaten Cilacap",
+"Kabupaten Demak",
+"Kabupaten Grobogan",
+"Kabupaten Jepara",
+"Kabupaten Karanganyar",
+"Kabupaten Kebumen",
+"Kabupaten Kendal",
+"Kabupaten Klaten",
+"Kabupaten Kudus",
+"Kabupaten Magelang",
+"Kabupaten Pati",
+"Kabupaten Pekalongan",
+"Kabupaten Pemalang",
+"Kabupaten Purbalingga",
+"Kabupaten Purworejo",
+"Kabupaten Rembang",
+"Kabupaten Semarang",
+"Kabupaten Sragen",
+"Kabupaten Sukoharjo",
+"Kabupaten Tegal",
+"Kabupaten Temanggung",
+"Kabupaten Wonogiri",
+"Kabupaten Wonosobo",
+"Kota Magelang",
+"Kota Pekalongan",
+"Kota Salatiga",
+"Kota Semarang",
+"Kota Surakarta",
+"Kota Tegal"
+
+];
+
 
 
 // menyimpan foto hasil capture
@@ -295,6 +340,33 @@ function validateForm(){
 }
 
 
+
+// ==========================================
+// ISI DROPDOWN KABUPATEN/KOTA
+// ==========================================
+
+
+const kotaSelect =
+document.getElementById("kota");
+
+
+jawaTengah.forEach(function(kota){
+
+
+    const option =
+    document.createElement("option");
+
+
+    option.value = kota;
+
+
+    option.textContent = kota;
+
+
+    kotaSelect.appendChild(option);
+
+
+});
 
 
 
