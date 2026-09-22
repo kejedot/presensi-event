@@ -1,243 +1,498 @@
-// =================================
-// KONFIGURASI APPS SCRIPT
-// =================================
+// ==========================================
+// KONFIGURASI
+// ==========================================
 
-// Ganti dengan URL Web App Apps Script nanti
-
-const SCRIPT_URL = 
-"https://script.google.com/macros/s/AKfycbx1EbSBfbhz7JYDVaLEmBfiMSOvxjwnOk__FGrYDvrR2oiNHlFVzu_3o3jP7gUcS95uEQ/exec";
+// nanti diganti dengan URL Web App Google Apps Script
+const SCRIPT_URL = "MASUKKAN_URL_APPS_SCRIPT";
 
 
 
-// =================================
+// ==========================================
 // ELEMENT HTML
-// =================================
+// ==========================================
 
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
+const camera = document.getElementById("camera");
+
 const preview = document.getElementById("preview");
 
-const btnCamera = document.getElementById("btnCamera");
-const btnSubmit = document.getElementById("btnSubmit");
+const canvas = document.getElementById("canvas");
 
-let stream;
-let fotoBase64 = "";
+const photoBtn = document.getElementById("photoBtn");
 
+const submitBtn = document.getElementById("submitBtn");
 
+const namaInput = document.getElementById("nama");
 
-// =================================
-// AKTIFKAN KAMERA
-// =================================
+const kotaInput = document.getElementById("kota");
 
 
-btnCamera.addEventListener(
-"click",
-async function(){
 
-    try {
+
+// menyimpan foto hasil capture
+
+let photoData = null;
+
+let stream = null;
+
+
+
+
+// ==========================================
+// AKTIFKAN KAMERA DEPAN
+// ==========================================
+
+
+async function startCamera(){
+
+
+    try{
 
 
         stream = await navigator.mediaDevices.getUserMedia({
 
             video:{
                 facingMode:"user",
+
                 width:{
                     ideal:720
                 },
+
                 height:{
-                    ideal:960
+                    ideal:1280
                 }
+
             },
+
 
             audio:false
 
         });
 
-        video.srcObject = stream;
+
+
+        camera.srcObject = stream;
+
+
     }
+
 
     catch(error){
 
+
         alert(
-        "Kamera tidak dapat digunakan.\nPastikan izin kamera diberikan."
+            "Kamera tidak dapat diakses. Pastikan izin kamera diberikan."
         );
 
+
         console.error(error);
+
+
     }
+
+
+}
+
+
+
+
+
+// jalankan kamera saat halaman dibuka
+
+startCamera();
+
+
+
+
+
+// ==========================================
+// AMBIL FOTO
+// ==========================================
+
+
+photoBtn.addEventListener(
+"click",
+
+function(){
+
+
+
+    if(photoData){
+
+
+        // jika sudah ada foto
+        // tombol menjadi foto ulang
+
+
+        resetPhoto();
+
+
+        return;
+
+
+    }
+
+
+
+
+    const context = canvas.getContext("2d");
+
+
+
+    canvas.width = camera.videoWidth;
+
+    canvas.height = camera.videoHeight;
+
+
+
+    context.drawImage(
+
+        camera,
+
+        0,
+
+        0,
+
+        canvas.width,
+
+        canvas.height
+
+    );
+
+
+
+
+    photoData = canvas.toDataURL(
+        "image/jpeg",
+        0.8
+    );
+
+
+
+    preview.src = photoData;
+
+
+    preview.style.display="block";
+
+
+
+    photoBtn.innerHTML =
+    "🔄 Foto Ulang";
+
+
+
+    photoBtn.style.background =
+    "#f97316";
+
+
+
+    submitBtn.disabled=false;
+
 
 
 });
 
 
-// =================================
-// AMBIL FOTO
-// =================================
-
-function ambilFoto(){
 
 
-    if(!stream){
+
+
+
+// ==========================================
+// RESET FOTO
+// ==========================================
+
+
+function resetPhoto(){
+
+
+    photoData=null;
+
+
+    preview.src="";
+
+    preview.style.display="none";
+
+
+
+    photoBtn.innerHTML =
+    "📷 Ambil Foto";
+
+
+    photoBtn.style.background =
+    "#2563eb";
+
+
+
+    submitBtn.disabled=true;
+
+
+
+}
+
+
+
+
+
+
+// ==========================================
+// VALIDASI FORM
+// ==========================================
+
+
+function validateForm(){
+
+
+    if(
+        namaInput.value.trim()===""
+    ){
 
         alert(
-        "Aktifkan kamera terlebih dahulu"
+        "Nama belum diisi"
         );
-        return;
+
+
+        return false;
+
     }
 
-    const width = video.videoWidth;
-    const height = video.videoHeight;
-
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx =
-    canvas.getContext("2d");
-    ctx.drawImage(
-        video,
-        0,
-        0,
-        width,
-        height
-    );
 
 
-    fotoBase64 =
-    canvas.toDataURL(
-        "image/jpeg",
-        0.85
-    );
+    if(
+        kotaInput.value===""
 
-    preview.src =
-    fotoBase64;
-    preview.style.display =
-    "block";
+    ){
 
-    alert(
-    "Foto berhasil diambil"
-    );
-}
+        alert(
+        "Kabupaten/Kota belum dipilih"
+        );
 
 
-// tombol kamera
+        return false;
 
-btnCapture.onclick = function () {
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    fotoBase64 = canvas.toDataURL("image/jpeg", 0.9);
-
-    previewFoto.src = fotoBase64;
-    previewFoto.style.display = "block";
-    video.style.display = "none";
-
-    btnCapture.innerHTML = "📷 Ambil Ulang";
-    btnRetake.style.display = "none";
-    btnSubmit.disabled = false;
-}
-
-btnCapture.onclick = function () {
-
-    if (previewFoto.style.display == "block") {
-
-        previewFoto.style.display = "none";
-        video.style.display = "block";
-
-        btnCapture.innerHTML = "📸 Ambil Foto";
-        btnSubmit.disabled = true;
-
-        return;
     }
 
-    // proses mengambil foto
+
+
+    if(!photoData){
+
+
+        alert(
+        "Silakan ambil foto terlebih dahulu"
+        );
+
+
+        return false;
+
+
+    }
+
+
+
+    return true;
+
+
 }
 
-// =================================
+
+
+
+
+
+// ==========================================
 // KIRIM PRESENSI
-// =================================
-btnSubmit.addEventListener(
+// ==========================================
+
+
+submitBtn.addEventListener(
+
 "click",
+
 async function(){
-    const nama =
-    document.getElementById("nama").value;
-    const asal =
-    document.getElementById("asal").value;
-    if(nama=="" || asal==""){
-        alert(
-        "Nama dan asal wajib diisi"
-        );
+
+
+
+    if(!validateForm()){
+
         return;
+
     }
 
-    if(fotoBase64==""){
 
-        alert(
-        "Ambil foto terlebih dahulu"
-        );
-        return;
-    }
 
-    const data = {
-        nama:nama,
-        asal:asal,
-        foto:fotoBase64,
+
+    submitBtn.disabled=true;
+
+
+    submitBtn.innerHTML=
+    "Mengirim...";
+
+
+
+
+
+    const data={
+
+
+        nama:
+        namaInput.value,
+
+
+        kota:
+        kotaInput.value,
+
+
+        foto:
+        photoData,
+
+
         waktu:
         new Date()
-        .toLocaleString("id-ID")
+        .toISOString()
+
 
     };
+
+
+
+
+
     try{
-        btnSubmit.innerHTML =
-        "Mengirim...";
-        btnSubmit.disabled=true;
+
+
+
+        const response =
         await fetch(
+
             SCRIPT_URL,
+
             {
 
-                method:"POST",
 
-                mode:"no-cors",
+            method:"POST",
 
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
 
-                body:
-                JSON.stringify(data)
+            body:
+            JSON.stringify(data),
+
+
+            headers:{
+
+
+                "Content-Type":
+                "text/plain;charset=utf-8"
+
+
             }
+
+
+            }
+
+
         );
 
-        alert(
-        "Presensi berhasil dikirim"
-        );
 
-        // reset form
-        document
-        .getElementById("nama")
-        .value="";
 
-        document
-        .getElementById("asal")
-        .value="";
 
-        preview.style.display="none";
-        fotoBase64="";
+
+        const result =
+        await response.json();
+
+
+
+
+
+        if(result.status==="success"){
+
+
+
+            alert(
+            "Presensi berhasil dikirim"
+            );
+
+
+
+            resetForm();
+
+
+        }
+
+
+        else{
+
+
+            alert(
+            "Presensi gagal"
+            );
+
+
+        }
+
+
+
     }
+
+
 
     catch(error){
-        alert(
-        "Gagal mengirim presensi"
-        );
+
+
+
         console.error(error);
+
+
+
+        alert(
+        "Terjadi kesalahan koneksi"
+        );
+
+
+
     }
 
+
+
     finally{
-        btnSubmit.innerHTML =
+
+
+        submitBtn.disabled=false;
+
+
+        submitBtn.innerHTML=
         "Kirim Presensi";
-        btnSubmit.disabled=false;
+
+
     }
+
+
+
+
 });
+
+
+
+
+
+
+
+
+// ==========================================
+// RESET FORM SETELAH BERHASIL
+// ==========================================
+
+
+function resetForm(){
+
+
+
+    namaInput.value="";
+
+
+    kotaInput.value="";
+
+
+    resetPhoto();
+
+
+
+}
