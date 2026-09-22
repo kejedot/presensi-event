@@ -514,7 +514,10 @@ async function(){
 
     const data={
 
+        kodeAcara:
+        EVENT_CONFIG.kodeAcara,
 
+        
         nama:
         namaInput.value,
 
