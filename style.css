@@ -37,10 +37,15 @@ body{
 
     max-width:420px;
 
+    min-height:100vh;
+
     padding:20px;
 
-}
+    display:flex;
 
+    flex-direction:column;
+
+}
 
 
 .header{
@@ -263,9 +268,11 @@ footer{
 
     color:white;
 
-    margin-top:20px;
-
     font-size:12px;
+
+    padding:20px 0 10px;
+
+    margin-top:auto;
 
 }
 
