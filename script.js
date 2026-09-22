@@ -3,7 +3,7 @@
 // ==========================================
 
 // nanti diganti dengan URL Web App Google Apps Script
-const SCRIPT_URL = "MASUKKAN_URL_APPS_SCRIPT";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18KXH5QJZ6AoQAGXf26DCzkz_K-f4rveadXF7Uj6m8qqRQbumiA/exec";
 
 
 
@@ -346,13 +346,16 @@ async function(){
         photoData,
 
 
+        device:
+        navigator.userAgent,
+
+
         waktu:
         new Date()
         .toISOString()
 
 
     };
-
 
 
 
