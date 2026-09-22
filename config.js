@@ -57,10 +57,6 @@ const EVENT_CONFIG = {
 
         "Posisikan wajah di tengah area foto",
 
-//        "Pastikan wajah terlihat jelas",
-
-//        "Gunakan pencahayaan yang cukup",
-
         "Hindari penggunaan masker atau kacamata gelap"
 
     ],
