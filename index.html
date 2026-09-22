@@ -1,124 +1,157 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Presensi Kehadiran</title>
+<title>Presensi Digital</title>
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-    <h1>Presensi Kehadiran</h1>
-    <p class="subtitle">
-        Silakan isi data dan ambil foto selfie
-    </p>
 
-    <!-- FORM -->
+    <div class="header">
 
-    <div class="form-group">
+        <img src="assets/logo.png" class="logo">
 
-        <label>Nama Lengkap</label>
+        <h1>
+            PRESENSI DIGITAL
+        </h1>
 
-        <input
-            type="text"
-            id="nama"
-            placeholder="Masukkan nama lengkap"
-            autocomplete="off"
-            required>
+        <p>
+            Silakan lengkapi data dan ambil foto selfie
+        </p>
 
     </div>
 
-    <div class="form-group">
 
-        <label>Asal / Instansi</label>
 
-        <input
-            type="text"
-            id="asal"
-            placeholder="Masukkan asal lembaga"
-            autocomplete="off"
-            required>
+    <div class="card">
 
-    </div>
 
-    <!-- AREA KAMERA -->
+        <!-- FOTO -->
 
-    <div class="camera-wrapper">
+        <div class="photo-box">
 
-        <!-- Kamera langsung aktif -->
+            <video 
+                id="camera"
+                autoplay
+                playsinline>
+            </video>
 
-        <video
-            id="video"
-            autoplay
-            playsinline
-            muted>
-        </video>
 
-        <!-- Preview setelah foto -->
+            <img 
+                id="preview"
+                class="preview">
 
-        <img
-            id="previewFoto"
-            alt="Preview Foto">
 
-        <!-- Canvas tersembunyi -->
+        </div>
 
-        <canvas
-            id="canvas"
-            style="display:none;">
+
+
+        <button 
+        id="photoBtn"
+        class="btn photo-btn">
+
+            📷 Ambil Foto
+
+        </button>
+
+
+
+        <canvas 
+        id="canvas"
+        hidden>
         </canvas>
 
-    </div>
 
-    <!-- Tombol -->
 
-    <div class="button-group">
+
+        <!-- FORM -->
+
+
+        <label>
+            Nama Lengkap
+        </label>
+
+        <input 
+        type="text"
+        id="nama"
+        placeholder="Masukkan nama">
+
+
+        
+
+        <label>
+            Kabupaten/Kota
+        </label>
+
+
+        <select id="kota">
+
+            <option value="">
+                Pilih Kabupaten/Kota
+            </option>
+
+
+            <option>
+                Kota Jambi
+            </option>
+
+
+            <option>
+                Kabupaten Muaro Jambi
+            </option>
+
+
+            <option>
+                Kabupaten Batanghari
+            </option>
+
+
+        </select>
+
+
+
 
         <button
-            id="btnCapture"
-            type="button">
+        id="submitBtn"
+        class="btn submit-btn"
+        disabled>
 
-            📸 Ambil Foto
+            Kirim Presensi
 
         </button>
 
-        <button
-            id="btnRetake"
-            type="button"
-            disabled>
 
-            🔄 Ulangi Foto
-
-        </button>
-
-        <button
-            id="btnSubmit"
-            type="button"
-            disabled>
-
-            ✅ Kirim Presensi
-
-        </button>
 
     </div>
 
-    <!-- Loading -->
 
-    <div
-        id="loading"
-        style="display:none;">
 
-        <p>Mengirim data...</p>
+    <footer>
 
-    </div>
+        © 2026 Presensi Digital
+
+    </footer>
+
+
 
 </div>
 
+
+
 <script src="script.js"></script>
 
+
 </body>
+
 </html>
