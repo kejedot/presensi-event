@@ -263,56 +263,121 @@ startCamera();
 
 photoBtn.addEventListener("click", function(){
 
+
     if(photoData){
+
         resetPhoto();
+
         return;
+
     }
 
-    const context = canvas.getContext("2d");
 
-    const targetWidth = 900;
-    const targetHeight = 1200;
-    const targetRatio = targetWidth / targetHeight; // 0.75 = 3:4
 
-    const sourceWidth = camera.videoWidth;
-    const sourceHeight = camera.videoHeight;
-    const sourceRatio = sourceWidth / sourceHeight;
+    const videoWidth = camera.videoWidth;
+    const videoHeight = camera.videoHeight;
 
-    let sx, sy, sWidth, sHeight;
 
-    // Jika video lebih lebar dari rasio target, crop sisi kiri-kanan
-    if(sourceRatio > targetRatio){
-        sHeight = sourceHeight;
-        sWidth = sourceHeight * targetRatio;
-        sx = (sourceWidth - sWidth) / 2;
-        sy = 0;
+    const canvasWidth = 1080;
+    const canvasHeight = 1440;
+
+
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+
+
+    const ctx = canvas.getContext("2d");
+
+
+
+    const ratioVideo = videoWidth / videoHeight;
+
+    const ratioTarget = canvasWidth / canvasHeight;
+
+
+
+    let cropWidth;
+    let cropHeight;
+    let cropX;
+    let cropY;
+
+
+
+    if(ratioVideo > ratioTarget){
+
+        // crop kiri kanan
+
+        cropHeight = videoHeight;
+
+        cropWidth = videoHeight * ratioTarget;
+
+        cropX = (videoWidth - cropWidth) / 2;
+
+        cropY = 0;
+
+
+    }else{
+
+
+        // crop atas bawah
+
+        cropWidth = videoWidth;
+
+        cropHeight = videoWidth / ratioTarget;
+
+        cropX = 0;
+
+        cropY = (videoHeight - cropHeight) / 2;
+
+
     }
-    // Jika video lebih tinggi dari rasio target, crop atas-bawah
-    else{
-        sWidth = sourceWidth;
-        sHeight = sourceWidth / targetRatio;
-        sx = 0;
-        sy = (sourceHeight - sHeight) / 2;
-    }
 
-    canvas.width = targetWidth;
-    canvas.height = targetHeight;
 
-    context.drawImage(
+
+
+    ctx.drawImage(
+
         camera,
-        sx, sy, sWidth, sHeight,   // area sumber yang diambil
-        0, 0, targetWidth, targetHeight // area output canvas
+
+        cropX,
+        cropY,
+        cropWidth,
+        cropHeight,
+
+        0,
+        0,
+        canvasWidth,
+        canvasHeight
+
     );
 
-    photoData = canvas.toDataURL("image/jpeg", 0.9);
+
+
+
+    photoData =
+    canvas.toDataURL(
+        "image/jpeg",
+        0.9
+    );
+
+
 
     preview.src = photoData;
-    preview.style.display = "block";
 
-    photoBtn.innerHTML = "🔄 Foto Ulang";
-    photoBtn.style.background = "#f97316";
+    preview.style.display="block";
 
-    submitBtn.disabled = false;
+
+
+    photoBtn.innerHTML =
+    "🔄 Foto Ulang";
+
+
+
+    submitBtn.disabled=false;
+
+
 });
 
 
