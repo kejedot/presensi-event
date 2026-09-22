@@ -1,251 +1,268 @@
-/* ==============================
-   GLOBAL STYLE
-================================ */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Segoe UI", Arial, sans-serif;
+*{
+    box-sizing:border-box;
+    font-family:
+    'Segoe UI',
+    sans-serif;
 }
 
-body {
-    min-height: 100vh;
-    background: linear-gradient(
-        135deg,
-        #f5f7fa,
-        #e4ecf7
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        160deg,
+        #0f172a,
+        #1d4ed8,
+        #7c3aed
     );
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
-    padding: 20px;
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
 }
 
 
-/* ==============================
-   CONTAINER
-================================ */
 
-.container {
+.container{
 
-    width: 100%;
-    max-width: 420px;
+    width:100%;
 
-    background: white;
+    max-width:420px;
 
-    border-radius: 18px;
+    padding:20px;
 
-    padding: 25px;
+}
+
+
+
+.header{
+
+    text-align:center;
+
+    color:white;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.logo{
+
+    width:70px;
+
+    height:70px;
+
+    object-fit:contain;
+
+}
+
+
+
+.header h1{
+
+    font-size:24px;
+
+    margin:10px 0;
+
+}
+
+
+
+.header p{
+
+    opacity:.85;
+
+    font-size:14px;
+
+}
+
+
+
+
+.card{
+
+    background:
+    rgba(255,255,255,.95);
+
+
+    border-radius:25px;
+
+    padding:25px;
+
 
     box-shadow:
-        0 10px 30px rgba(0,0,0,0.12);
+    0 20px 40px
+    rgba(0,0,0,.2);
 
 }
 
 
-/* ==============================
-   HEADER
-================================ */
-
-.header {
-
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.header h1 {
-
-    font-size: 25px;
-    color: #1f2937;
-    margin-bottom: 8px;
-}
 
 
-.header p {
+.photo-box{
 
-    color: #6b7280;
-    font-size: 14px;
+    width:100%;
+
+    height:280px;
+
+    background:#e5e7eb;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    position:relative;
+
 }
 
 
 
-/* ==============================
-   FORM
-================================ */
+video,
+.preview{
 
 
-.form-group {
+    width:100%;
 
-    margin-bottom: 18px;
+    height:100%;
+
+    object-fit:cover;
+
+
 }
 
 
-.form-group label {
+
+.preview{
+
+    display:none;
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+}
+
+
+
+
+
+label{
 
     display:block;
-    margin-bottom:7px;
+
+    margin-top:18px;
+
+    margin-bottom:6px;
+
     font-weight:600;
-    color:#374151;
-    font-size:14px;
+
+    color:#334155;
+
 }
 
 
-.form-group input {
+
+
+input,
+select{
+
 
     width:100%;
-    padding:12px 14px;
-    border-radius:10px;
-    border:1px solid #d1d5db;
-    font-size:15px;
-    outline:none;
-    transition:.3s;
-}
 
+    height:48px;
 
-.form-group input:focus {
-
-    border-color:#2563eb;
-    box-shadow:
-    0 0 0 3px rgba(37,99,235,.15);
-}
-
-
-
-/* ==============================
-   CAMERA AREA
-================================ */
-
-
-.camera-box {
-
-    width:100%;
-    aspect-ratio:3 / 4;
-    background:#111827;
-    border-radius:15px;
-    overflow:hidden;
-    position:relative;
-    margin-bottom:15px;
-}
-
-
-.camera-box video {
-
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.camera-box canvas {
-
-    display:none;
-}
-
-
-/* ==============================
-   BUTTON
-================================ */
-
-
-button {
-
-    width:100%;
-    padding:13px;
-    border:none;
     border-radius:12px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.3s;
+
+    border:1px solid #cbd5e1;
+
+    padding:0 15px;
+
+    font-size:15px;
+
+
 }
 
 
-.btn-camera {
+
+.btn{
+
+
+    width:100%;
+
+    height:50px;
+
+    border:none;
+
+    border-radius:14px;
+
+    margin-top:18px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+
+}
+
+
+
+.photo-btn{
+
 
     background:#2563eb;
+
     color:white;
-    margin-bottom:12px;
-}
 
 
-.btn-camera:hover {
-
-    background:#1d4ed8;
 }
 
 
 
-.btn-submit {
+.submit-btn{
+
 
     background:#16a34a;
+
     color:white;
-}
 
 
-.btn-submit:hover {
-
-    background:#15803d;
-}
-
-
-/* ==============================
-   FOTO PREVIEW
-================================ */
-
-
-.preview {
-
-    width:100%;
-    border-radius:12px;
-    margin-top:15px;
-    display:none;
 }
 
 
 
-/* ==============================
-   LOADING
-================================ */
+.submit-btn:disabled{
 
 
-.loading {
+    background:#94a3b8;
 
-    display:none;
+    cursor:not-allowed;
+
+
+}
+
+
+
+footer{
+
     text-align:center;
-    margin-top:15px;
-    color:#2563eb;
-    font-size:14px;
-}
 
+    color:white;
 
+    margin-top:20px;
 
-/* ==============================
-   RESPONSIVE
-================================ */
-
-
-@media(max-width:480px){
-
-    body{
-
-        padding:12px;
-
-    }
-
-
-    .container{
-
-        padding:20px;
-
-    }
-
-
-    .header h1{
-
-        font-size:22px;
-
-    }
+    font-size:12px;
 
 }
