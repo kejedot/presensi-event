@@ -11,8 +11,7 @@ const EVENT_CONFIG = {
 
 
     namaAcara:
-    "Workshop Sekretaris"
-    "DPD PKS se-Jawa Tengah 2026",
+    "Workshop Sekretaris DPD PKS se-Jawa Tengah 2026",
 
 
     tanggal:
