@@ -109,17 +109,19 @@ body{
 
 .event-description{
 
-    background:#f8fafc;
+    /*background:#f8fafc;
 
     border-left:4px solid #2563eb;
 
     border-radius:12px;
 
-    padding:12px 15px;
+    padding:12px 15px;*/
 
     margin-bottom:15px;
 
     font-size:14px;
+
+    font-type:bold;
 
     color:#475569;
 
