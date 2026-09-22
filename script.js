@@ -14,24 +14,101 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18
 
 document.addEventListener(
 "DOMContentLoaded",
+
 function(){
 
 
-document.getElementById("namaAplikasi").innerHTML =
+
+// Logo
+
+document.querySelector(".logo").src =
+EVENT_CONFIG.logo;
+
+
+
+// Nama aplikasi
+
+document.getElementById(
+"namaAplikasi"
+)
+.innerHTML =
 EVENT_CONFIG.namaAplikasi;
 
 
-document.getElementById("namaAcara").innerHTML =
+
+
+// Nama kegiatan
+
+document.getElementById(
+"namaAcara"
+)
+.innerHTML =
 EVENT_CONFIG.namaAcara;
 
 
-document.getElementById("detailAcara").innerHTML =
-EVENT_CONFIG.tanggal +
-" • " +
+
+
+// Detail acara
+
+document.getElementById(
+"detailAcara"
+)
+.innerHTML =
+
+EVENT_CONFIG.tanggal
++
+" • "
++
 EVENT_CONFIG.lokasi;
 
 
+
+
+// Deskripsi
+
+document.getElementById(
+"deskripsi"
+)
+.innerHTML =
+EVENT_CONFIG.deskripsi;
+
+
+
+
+// Panduan foto
+
+const panduan =
+document.getElementById(
+"panduanFoto"
+);
+
+
+
+EVENT_CONFIG.panduanFoto.forEach(
+
+(item)=>{
+
+
+const li =
+document.createElement("li");
+
+
+li.innerHTML=item;
+
+
+panduan.appendChild(li);
+
+
+}
+
+
+
+);
+
+
+
 });
+
 
 
 // ==========================================
