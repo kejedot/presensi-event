@@ -53,7 +53,7 @@ const EVENT_CONFIG = {
     // ======================================
 
     deskripsi:
-    "Silakan lengkapi data peserta dan ambil foto selfie",
+    "Ambil Foto TERBAIKMU",
 
 
 
