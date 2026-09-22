@@ -25,7 +25,7 @@ body{
 
     justify-content:center;
 
-    align-items:center;
+    align-items:flex-start;
 
 }
 
@@ -36,8 +36,6 @@ body{
     width:100%;
 
     max-width:420px;
-
-    min-height:100vh;
 
     padding:20px;
 
@@ -272,7 +270,7 @@ footer{
 
     padding:20px 0 10px;
 
-    margin-top:auto;
+    margin-top:20px;
 
 }
 
