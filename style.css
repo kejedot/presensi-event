@@ -107,7 +107,25 @@ body{
 }
 
 
+.event-description{
 
+    background:#f8fafc;
+
+    border-left:4px solid #2563eb;
+
+    border-radius:12px;
+
+    padding:12px 15px;
+
+    margin-bottom:15px;
+
+    font-size:14px;
+
+    color:#475569;
+
+    line-height:1.5;
+
+}
 
 .photo-box{
 
