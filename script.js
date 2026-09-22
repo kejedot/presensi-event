@@ -202,14 +202,17 @@ async function startCamera(){
             video:{
                 facingMode:"user",
 
+                aspectRatio:{
+                    ideal:0.75
+                },
+
                 width:{
-                    ideal:900
+                    ideal:1080
                 },
 
                 height:{
-                    ideal:1280
+                    ideal:1440
                 }
-
             },
 
 
