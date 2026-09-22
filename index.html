@@ -21,21 +21,21 @@
     <div class="header">
 
 
-    <img 
-    src="assets/logo.png"
-    class="logo">
+        <img 
+        src="assets/logo.png"
+        class="logo">
 
 
-    <h1 id="namaAplikasi"></h1>
+        <h1 id="namaAplikasi"></h1>
 
 
-    <h2 id="namaAcara"></h2>
+        <h2 id="namaAcara"></h2>
 
 
-    <p id="detailAcara"></p>
+        <p id="detailAcara"></p>
 
 
-    <p id="deskripsi"></p>
+        <p id="deskripsi"></p>
 
 
     </div>
@@ -44,120 +44,109 @@
 
     <div class="card">
 
+        <div class="photo-wrapper">
+
+        <!-- SPACE PANDUAN FOTO -->
+
+            <div class="photo-guide">
+
+                <strong>
+                Panduan Foto:
+                </strong>
+
+                <ul id="panduanFoto">
+
+                </ul>
+
+            </div>
 
         
-
-<div class="photo-wrapper">
-
-    <!-- SPACE PANDUAN FOTO -->
-
-    <div class="photo-guide">
-
-        <strong>
-            Panduan Foto:
-        </strong>
-
-        <ul id="panduanFoto">
-
-        </ul>
-
-    </div>
-
-        
-    <!-- AREA KAMERA -->
+            <!-- AREA KAMERA -->
     
-    <div class="photo-box">
+            <div class="photo-box">
 
-        <video 
-            id="camera"
-            autoplay
-            playsinline>
-        </video>
-
-
-        <img 
-            id="preview"
-            class="preview">
+                <video 
+                id="camera"
+                autoplay
+                playsinline>
+                </video>
 
 
-        <!-- Panduan wajah -->
+                <img 
+                id="preview"
+                class="preview">
 
-        <div class="face-guide">
 
-            <div class="face-circle"></div>
+            <!-- Panduan wajah -->
+
+            <div class="face-guide">
+
+                <div class="face-circle"></div>
+
+                </div>
+
+            </div>
+
+
+            <button 
+            id="photoBtn"
+            class="btn photo-btn">
+
+                📷 Ambil Foto
+
+            </button>
+
+
+
+            <canvas 
+            id="canvas"
+            hidden>
+            </canvas>
+
+
+
+
+            <!-- FORM -->
+
+
+            <label>
+                Nama Lengkap
+            </label>
+
+            <input 
+            type="text"
+            id="nama"
+            placeholder="Masukkan nama">
+
+            <label>
+                Kabupaten/Kota
+            </label>
+
+
+            <select id="kota">
+
+                <option value="">
+                    Pilih Kabupaten/Kota
+                </option>
+
+            </select>
+
+
+            <button
+            id="submitBtn"
+            class="btn submit-btn"
+            disabled>
+
+                Kirim Presensi
+
+            </button>
 
         </div>
 
 
-    </div>
+</div>
 
-
-
-
-        <button 
-        id="photoBtn"
-        class="btn photo-btn">
-
-            📷 Ambil Foto
-
-        </button>
-
-
-
-        <canvas 
-        id="canvas"
-        hidden>
-        </canvas>
-
-
-
-
-        <!-- FORM -->
-
-
-        <label>
-            Nama Lengkap
-        </label>
-
-        <input 
-        type="text"
-        id="nama"
-        placeholder="Masukkan nama">
-
-
-        
-
-        <label>
-            Kabupaten/Kota
-        </label>
-
-
-        <select id="kota">
-
-            <option value="">
-                Pilih Kabupaten/Kota
-            </option>
-
-        </select>
-
-
-
-
-        <button
-        id="submitBtn"
-        class="btn submit-btn"
-        disabled>
-
-            Kirim Presensi
-
-        </button>
-
-
-
-    </div>
-
-
-
+    
     <footer>
 
         © 2026 Presensi Digital<br>
@@ -165,9 +154,6 @@
 
     </footer>
 
-
-
-</div>
 
 
 
