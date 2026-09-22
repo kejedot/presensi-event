@@ -571,3 +571,30 @@ function resetForm(){
 
 
 }
+
+
+// ==========================================
+// LOAD INFORMASI ACARA
+// ==========================================
+
+
+document.getElementById("namaAplikasi")
+.innerHTML =
+EVENT_CONFIG.namaAplikasi;
+
+
+
+document.getElementById("namaAcara")
+.innerHTML =
+EVENT_CONFIG.namaAcara;
+
+
+
+document.getElementById("detailAcara")
+.innerHTML =
+
+EVENT_CONFIG.tanggal
++
+" • "
++
+EVENT_CONFIG.lokasi;
