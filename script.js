@@ -586,7 +586,7 @@ async function(){
 
     try{
 
-
+console.log("DATA KIRIM", data);
 
         const response =
         await fetch(
