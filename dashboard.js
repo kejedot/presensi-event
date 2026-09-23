@@ -46,7 +46,13 @@ async function loadDashboard(){
     // hapus header
 
     const peserta =
-    data.slice(1);
+    data
+    .slice(1)
+    .filter(row =>
+
+    row[1] === EVENT_CONFIG.kodeAcara
+
+    );
 
 
 
