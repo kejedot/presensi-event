@@ -432,3 +432,308 @@ footer{
     margin-bottom:5px;
 
 }
+
+
+/* =====================================
+   PAGE ANIMATION
+===================================== */
+
+
+.container{
+
+    animation:
+    fadeInUp 0.6s ease;
+
+}
+
+
+
+@keyframes fadeInUp{
+
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translateY(30px);
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+        transform:
+        translateY(0);
+
+    }
+
+}
+
+
+/* =====================================
+   CARD PRESENSI ANIMATION
+===================================== */
+
+.card{
+
+    animation:
+    slideIn 0.7s ease;
+
+}
+
+
+
+@keyframes slideIn{
+
+
+    from{
+
+        opacity:0;
+
+        transform:
+        scale(.95);
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+        transform:
+        scale(1);
+
+    }
+
+
+}
+
+/* =====================================
+   PREVIEW PHOTO ANIMATION
+===================================== */
+
+.preview.show{
+
+
+    display:block;
+
+
+    animation:
+
+    zoomIn .35s ease;
+
+
+}
+
+
+
+@keyframes zoomIn{
+
+
+    from{
+
+        opacity:0;
+
+        transform:
+        scale(.8);
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+        transform:
+        scale(1);
+
+    }
+
+}
+
+
+
+
+/* ==================================
+   EFEK TEMBOL
+==================================*/
+
+.btn{
+
+    transition:
+
+    transform .15s ease,
+
+    box-shadow .15s ease;
+
+}
+
+
+
+.btn:active{
+
+
+    transform:
+    scale(.96);
+
+
+}
+
+
+/* ====================================
+    LOADING SAAT KIRIM PRESENSI
+=================================*/
+
+.loader{
+
+
+    display:inline-block;
+
+
+    width:16px;
+
+
+    height:16px;
+
+
+    border:
+
+    3px solid rgba(255,255,255,.4);
+
+
+    border-top-color:white;
+
+
+    border-radius:50%;
+
+
+    animation:
+
+    spin .8s linear infinite;
+
+
+    vertical-align:middle;
+
+
+    margin-right:8px;
+
+
+}
+
+
+
+@keyframes spin{
+
+
+    to{
+
+        transform:
+        rotate(360deg);
+
+    }
+
+
+}
+
+/* ===================================
+    TAMPILAN LAYAR SUKSES
+=================================*/
+
+.success-popup{
+
+
+    position:fixed;
+
+
+    inset:0;
+
+
+    background:
+    rgba(15,23,42,.65);
+
+
+    display:none;
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+}
+
+
+
+.success-popup.show{
+
+
+    display:flex;
+
+
+    animation:
+    fadeIn .3s ease;
+
+
+}
+
+
+
+.success-box{
+
+
+    background:white;
+
+
+    padding:30px;
+
+
+    border-radius:25px;
+
+
+    text-align:center;
+
+
+    width:80%;
+
+
+}
+
+
+
+.success-icon{
+
+
+    width:60px;
+
+    height:60px;
+
+
+    margin:auto;
+
+
+    background:#16a34a;
+
+
+    color:white;
+
+
+    border-radius:50%;
+
+
+    display:flex;
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+    font-size:32px;
+
+
+}
