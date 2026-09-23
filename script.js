@@ -371,7 +371,7 @@ photoBtn.addEventListener("click", function(){
 
     preview.src = photoData;
 
-    preview.style.display="block";
+    preview.style.display="show";
 
 
 
