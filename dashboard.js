@@ -1,6 +1,30 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18KXH5QJZ6AoQAGXf26DCzkz_K-f4rveadXF7Uj6m8qqRQbumiA/exec";
 
+// LOAD IDENTITAS ACARA
+
+document.getElementById("namaAplikasi")
+.innerHTML =
+EVENT_CONFIG.namaAplikasi;
+
+
+document.getElementById("namaAcara")
+.innerHTML =
+EVENT_CONFIG.namaAcara;
+
+
+document.getElementById("detailAcara")
+.innerHTML =
+EVENT_CONFIG.tanggal
++
+" • "
++
+EVENT_CONFIG.lokasi;
+
+
+
+loadDashboard();
+
 
 async function loadDashboard(){
 
