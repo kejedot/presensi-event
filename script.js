@@ -406,7 +406,7 @@ function resetPhoto(){
 
     preview.style.display="none";
 
-
+    preview.classList.remove("show");
 
     photoBtn.innerHTML =
     "📷 Ambil Foto";
