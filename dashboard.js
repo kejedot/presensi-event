@@ -34,6 +34,7 @@ document
 
 
 data
+.slice(1)
 .slice(-5)
 .reverse()
 .forEach(row=>{
@@ -43,11 +44,15 @@ tbody.innerHTML += `
 
 <tr>
 
+<td>
+<img src="${convertDrive(row[5])}">
+</td>
+
 <td>${row[3]}</td>
 
 <td>${row[4]}</td>
 
-<td>${row[2]}</td>
+<td>${formatTime(row[2])}</td>
 
 </tr>
 
@@ -72,3 +77,18 @@ loadDashboard,
 5000
 
 );
+
+function formatTime(value){
+
+    const date =
+    new Date(value);
+
+    return date.toLocaleTimeString(
+        "id-ID",
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+}
