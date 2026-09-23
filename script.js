@@ -371,7 +371,7 @@ photoBtn.addEventListener("click", function(){
 
     preview.src = photoData;
 
-    preview.style.display="block";
+    preview.style.display="show";
 
 
 
@@ -546,7 +546,10 @@ async function(){
 
 
     submitBtn.innerHTML=
-    "Mengirim...";
+    `
+    <span class="loader"></span>
+    Mengirim...
+    `;
 
 
 
@@ -632,14 +635,31 @@ async function(){
         if(result.status==="success"){
 
 
+            submitBtn.innerHTML =
+            "✓ Berhasil";
+
+
+            submitBtn.style.background =
+            "#16a34a";
+
 
             alert(
             "Presensi berhasil dikirim"
             );
 
 
+            setTimeout(()=>{
 
-            resetForm();
+
+                resetForm();
+
+
+                submitBtn.innerHTML =
+                "Kirim Presensi";
+
+
+            },2000);
+
 
 
         }
