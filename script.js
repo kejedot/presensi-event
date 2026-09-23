@@ -115,89 +115,6 @@ panduan.appendChild(li);
 });
 
 
-// Validasi Wajah dengan AI
-
-let faceDetected=false;
-
-
-async function checkFace(){
-
-
-const img =
-new Image();
-
-
-img.src =
-photoData;
-
-
-await img.decode();
-
-
-
-const face =
-new FaceDetection({
-
-locateFile:
-(file)=>{
-
-return `
-https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}
-`;
-
-}
-
-});
-
-
-
-face.setOptions({
-
-model:
-"short",
-
-minDetectionConfidence:
-0.7
-
-});
-
-
-
-face.onResults(
-results=>{
-
-
-if(
-results.detections &&
-results.detections.length>0
-){
-
-faceDetected=true;
-
-
-}else{
-
-
-faceDetected=false;
-
-
-}
-
-
-});
-
-
-await face.send({
-
-image:img
-
-});
-
-
-return faceDetected;
-
-
-}
 
 // ==========================================
 // ELEMENT HTML
@@ -450,11 +367,11 @@ photoBtn.addEventListener("click", function(){
         0.9
     );
 
-    await checkFace();
+
 
     preview.src = photoData;
 
-    preview.style.display="show";
+    preview.style.display="block";
 
 
 
@@ -629,10 +546,7 @@ async function(){
 
 
     submitBtn.innerHTML=
-    `
-    <span class="loader"></span>
-    Mengirim...
-    `;
+    "Mengirim...";
 
 
 
@@ -718,31 +632,14 @@ async function(){
         if(result.status==="success"){
 
 
-            submitBtn.innerHTML =
-            "✓ Berhasil";
-
-
-            submitBtn.style.background =
-            "#16a34a";
-
 
             alert(
             "Presensi berhasil dikirim"
             );
 
 
-            setTimeout(()=>{
 
-
-                resetForm();
-
-
-                submitBtn.innerHTML =
-                "Kirim Presensi";
-
-
-            },2000);
-
+            resetForm();
 
 
         }
@@ -802,16 +699,7 @@ async function(){
 
 
 
-        if(!faceDetected){
 
-            alert(
-                "Wajah belum terdeteksi. Silakan ambil foto ulang."
-            );
-
-
-            return;
-
-        }
 
 
 
