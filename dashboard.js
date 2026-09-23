@@ -55,7 +55,14 @@ async function loadDashboard(){
     document
     .getElementById("total")
     .innerHTML =
-    peserta.length;
+    const peserta =
+        data
+        .slice(1)
+        .filter(row =>
+        row[1] === EVENT_CONFIG.kodeAcara
+        &&
+        row[7] === "Hadir"
+    );
 
 
 
