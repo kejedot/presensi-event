@@ -24,6 +24,11 @@ function(){
 document.querySelector(".logo").src =
 EVENT_CONFIG.logo;
 
+document.getElementById(
+"namaDPW"
+)
+.innerHTML =
+EVENT_CONFIG.namaDPW;
 
 
 // Nama aplikasi
