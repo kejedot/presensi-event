@@ -7,6 +7,9 @@ Sistem presensi acara berbasis mobile menggunakan:
 - Google Sheet sebagai database
 - Google Drive sebagai penyimpanan foto peserta
 
+#GUNAKAN config.js untuk mengubah:
+No ID, Nama Acara, Tanggal, dan Tempat Acara
+
 
 ## Fitur
 
