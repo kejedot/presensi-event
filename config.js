@@ -11,6 +11,9 @@ const EVENT_CONFIG = {
     // ======================================
 
 
+    namaDPW:
+    "DPW PKS JAWA TENGAH",
+
     kodeAcara:
     "WSek-2026-001",
     
