@@ -1,87 +1,99 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18KXH5QJZ6AoQAGXf26DCzkz_K-f4rveadXF7Uj6m8qqRQbumiA/exec";
 
+const API_URL =
+"URL_APPS_SCRIPT";
+
 
 async function loadDashboard(){
 
 
-const response =
-await fetch(API_URL);
+    const response =
+    await fetch(API_URL);
 
 
 
-const data =
-await response.json();
+    const data =
+    await response.json();
 
 
 
-let jumlah =
-data.length-1;
+    console.log(data);
 
 
 
-document
-.getElementById("total")
-.innerHTML =
-jumlah;
+    // hapus header
+
+    const peserta =
+    data.slice(1);
 
 
 
-let tbody =
-document
-.getElementById("listPeserta");
+    // total hadir
+
+    document
+    .getElementById("total")
+    .innerHTML =
+    peserta.length;
 
 
 
-data
-.slice(1)
-.slice(-5)
-.reverse()
-.forEach(row=>{
+    const tbody =
+    document
+    .getElementById("listPeserta");
 
 
-tbody.innerHTML += `
 
-<tr>
-
-<td>
-<img src="${convertDrive(row[5])}">
-</td>
-
-<td>${row[3]}</td>
-
-<td>${row[4]}</td>
-
-<td>${formatTime(row[2])}</td>
-
-</tr>
-
-`;
+    tbody.innerHTML="";
 
 
-});
+
+    peserta
+    .slice(-5)
+    .reverse()
+    .forEach(row=>{
+
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>
+            ${row[3]}
+            </td>
+
+
+            <td>
+            ${row[4]}
+            </td>
+
+
+            <td>
+            ${formatTime(row[2])}
+            </td>
+
+
+        </tr>
+
+        `;
+
+
+    });
 
 
 }
 
 
 
-loadDashboard();
 
-
-
-setInterval(
-
-loadDashboard,
-
-5000
-
-);
 
 function formatTime(value){
 
+
     const date =
     new Date(value);
+
+
 
     return date.toLocaleTimeString(
         "id-ID",
@@ -92,3 +104,13 @@ function formatTime(value){
     );
 
 }
+
+
+
+loadDashboard();
+
+
+setInterval(
+loadDashboard,
+5000
+);
