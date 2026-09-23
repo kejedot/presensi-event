@@ -1,9 +1,6 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18KXH5QJZ6AoQAGXf26DCzkz_K-f4rveadXF7Uj6m8qqRQbumiA/exec";
 
-const API_URL =
-"URL_APPS_SCRIPT";
-
 
 async function loadDashboard(){
 
@@ -57,6 +54,14 @@ async function loadDashboard(){
         tbody.innerHTML += `
 
         <tr>
+
+            <td>
+            <img 
+            src="${convertDrive(row[5])}"
+            width="80"
+            style="border-radius:10px;">
+            </td>
+
 
             <td>
             ${row[3]}
@@ -114,3 +119,29 @@ setInterval(
 loadDashboard,
 5000
 );
+
+//Convert link Google Drive Foto menjadi Gambar
+
+function convertDrive(url){
+
+    if(!url){
+        return "";
+    }
+
+
+    // ambil ID file Google Drive
+
+    const id =
+    url.match(/[-\w]{25,}/);
+
+
+    if(id){
+
+        return `https://drive.google.com/thumbnail?id=${id[0]}&sz=w300`;
+
+    }
+
+
+    return url;
+
+}
