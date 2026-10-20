@@ -33,11 +33,11 @@ const EVENT_CONFIG = {
 
 
     tanggal:
-    "24 Oktober 2026",
+    "📅 24 Oktober 2026",
 
 
     lokasi:
-    "Aula Gedung DPTW PKS Jawa Tengah",
+    "📌 Aula Gedung DPTW PKS Jawa Tengah",
 
 
 
