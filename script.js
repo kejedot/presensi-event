@@ -64,8 +64,6 @@ EVENT_CONFIG.lokasi
 +
 "<br>"
 +
-"📅 "
-+
 EVENT_CONFIG.tanggal;
 
 
