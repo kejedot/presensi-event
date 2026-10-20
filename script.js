@@ -60,11 +60,13 @@ document.getElementById(
 )
 .innerHTML =
 
-EVENT_CONFIG.tanggal
+EVENT_CONFIG.lokasi
 +
-" • "
+"<br>"
 +
-EVENT_CONFIG.lokasi;
+"• "
++
+EVENT_CONFIG.tanggal;
 
 
 
