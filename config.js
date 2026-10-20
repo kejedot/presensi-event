@@ -15,7 +15,7 @@ const EVENT_CONFIG = {
     "DPW PKS JAWA TENGAH",
 
     kodeAcara:
-    "WSek-2026-001",
+    "Sos-2026-010",
     
     namaAplikasi:
     "PRESENSI DIGITAL",
@@ -28,16 +28,16 @@ const EVENT_CONFIG = {
     // ======================================
 
     namaAcara:
-    "WORKSHOP SEKRETARIS<br>DPD PKS Se-Jawa Tengah",
+    "RAKOR & SOSIALISASI<br>PANDUAN PEMENANGAN PEMILU 2029",
 
 
 
     tanggal:
-    "22 September 2026",
+    "24 Oktober 2026",
 
 
     lokasi:
-    "Gedung Pertemuan Utama",
+    "Aula Gedung DPTW PKS Jawa Tengah",
 
 
 
