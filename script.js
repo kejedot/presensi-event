@@ -142,6 +142,7 @@ const kotaInput = document.getElementById("kota");
 
 const jawaTengah = [
 
+"Bidang DPW PKS Jateng",
 "Kabupaten Banjarnegara",
 "Kabupaten Banyumas",
 "Kabupaten Batang",
