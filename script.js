@@ -200,57 +200,25 @@ let stream = null;
 
 
 async function startCamera(){
-
-
     try{
-
-
         stream = await navigator.mediaDevices.getUserMedia({
-
-            video:{
-                facingMode:"user",
-
-                aspectRatio:{
-                    ideal:0.75
-                },
-
-                width:{
-                    ideal:1080
-                },
-
-                height:{
-                    ideal:1440
-                }
+            video: {
+                facingMode: "user",
+                // Kita hapus kriteria ideal yang terlalu ketat agar HP lama/baru bisa masuk
+                width: { ideal: 1280 },
+                height: { ideal: 720 } 
             },
-
-
-            audio:false
-
+            audio: false
         });
 
-
-
         camera.srcObject = stream;
-
-
     }
-
-
     catch(error){
-
-
-        alert(
-            "Kamera tidak dapat diakses. Pastikan izin kamera diberikan."
-        );
-
-
+        alert("Kamera tidak dapat diakses. Coba restart browser atau pastikan izin kamera aktif.");
         console.error(error);
-
-
     }
-
-
 }
+
 
 
 
