@@ -1,5 +1,5 @@
 // 1. DEKLARASI API URL (Hanya boleh ada SATU di paling atas file)
-const API_URL = "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18KXH5QJZ6AoQAGXf26DCzkz_K-f4rveadXF7Uj6m8qqRQbumiA/exec";
+API_URL = "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18KXH5QJZ6AoQAGXf26DCzkz_K-f4rveadXF7Uj6m8qqRQbumiA/exec";
 
 // 2. LOAD IDENTITAS ACARA DENGAN PENGAMAN Halaman HTML
 const elAplikasi = document.getElementById("namaAplikasi");
