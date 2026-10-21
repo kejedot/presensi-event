@@ -80,16 +80,16 @@ function formatTime(value) {
 // 5. AUTO REFRESH PROYEKTOR TIAP 5 DETIK
 setInterval(loadDashboard, 5000);
 
-// 6. KONVERSI LINK GOOGLE DRIVE JADI FOTO (PERBAIKAN MURNI)
+// 6. KONVERSI LINK GOOGLE DRIVE JADI FOTO (METODE EKSPOR RESMI)
 function convertDrive(url) {
     if (!url || typeof url !== 'string') return "";
     
-    // Ambil ID unik file Google Drive dengan aman
+    // Ambil ID unik file Google Drive
     const match = url.match(/[-\w]{25,}/);
     
     if (match && match[0]) {
-        // Menggunakan match[0] agar mengambil string ID asli, bukan objek Array
-        return `https://google.com{match[0]}&sz=w300`;
+        // Menggunakan uc?export=view&id agar browser langsung merender sebagai file gambar murni
+        return `https://google.com{match[0]}`;
     }
     
     return url;
