@@ -51,16 +51,24 @@ async function loadDashboard() {
 
            limaTerakhir.forEach(row => {
                 tbody.innerHTML += `
-                <tr>
-                    <td>
-                        <img src="${row[8] || ''}" width="80" style="border-radius:15px; object-fit:cover; aspect-ratio:3/4;">
-                    </td>
-                    <td>${row[3] || "-"}</td>
-                    <td>${row[4] || "-"}</td>
-                    <td>${formatTime(row[2])}</td>
-                </tr>
+                    <tr>
+                        <!-- Membuat kolom foto berada di tengah (center) secara horizontal dan vertikal -->
+                        <td style="text-align: center; vertical-align: middle;">
+                            <img src="${row || ''}" width="80" style="border-radius:15px; object-fit:cover; aspect-ratio:3/4; display: block; margin: 0 auto;">
+                        </td>
+        
+                        <!-- Kolom Nama tetap rata kiri agar rapi dibaca -->
+                        <td style="vertical-align: middle;">${row || "-"}</td>
+        
+                        <!-- Kolom Kabupaten tetap rata kiri agar rapi dibaca -->
+                        <td style="vertical-align: middle;">${row || "-"}</td>
+        
+                        <!-- Membuat kolom waktu presensi berada di tengah (center) secara horizontal dan vertikal -->
+                        <td style="text-align: center; vertical-align: middle;">${formatTime(row)}</td>
+                    </tr>
                 `;
             });
+
         }
     } catch (error) {
         console.error("Gagal memuat data dashboard:", error);
