@@ -50,49 +50,33 @@ async function loadDashboard() {
             const limaTerakhir = pesertaHadir.slice(-5).reverse();
 
 limaTerakhir.forEach(item => {
-    // 1. PENGAMAN DATA: Jika baris berbentuk teks panjang, pecah otomatis menjadi array berdasarkan tanda koma
+    // Pengaman jika format baris pecah dari server
     let row = Array.isArray(item) ? item : (typeof item === 'string' ? item.split(',') : []);
-    
-    // Jika data kosong atau rusak, lewatkan baris ini
     if (row.length === 0) return;
 
-    // 2. PEMETAAN INDEKS BERDASARKAN URUTAN DI GOOGLE SHEET ANDA
-    // Berdasarkan teks mentah Anda:
-    // row[0] = ID (PRS-...)
-    // row[1] = Kode Acara (Sos-...)
-    // row[2] = Timestamp (2026-10-20T...)
-    // row[3] = Nama (Lik Sakdi)
-    // row[4] = Asal (Kabupaten Tegal)
-    // row[5] = Link Foto Asli (https://google.com...)
-    // ... Kolom status, tipe browser, dsb.
-    // row[8] = Link Thumbnail Foto dari Kolom I (https://google.comthumbnail...)
-
-    const idFoto = row[0]; // ID Unik kehadiran untuk cadangan
-    const kodeAcara = row[1];
     const waktuPresensi = row[2];
     const namaPeserta = row[3];
     const asalKota = row[4];
-    
-    // Ambil link thumbnail dari kolom ke-9 (indeks 8), jika kosong/tidak ada gunakan fallback regex dari kolom 5
-    let urlFoto = row[8] || "";
-    if (!urlFoto.includes("http") && row[5] && row[5].includes("http")) {
-        const matchId = row[5].match(/[-\w]{25,}/);
-        if (matchId) urlFoto = `https://google.comthumbnail?id=${matchId}&sz=w300`;
-    }
+    const urlFoto = row[8] || ""; // Kolom I Google Sheet Anda
 
-    // 3. RENDER HTML KE TABEL (POSISI FOTO & WAKTU SUDAH CENTER)
+    // RENDER KE STRUKTUR STRIP GRID ELEGAN BARU
     tbody.innerHTML += `
     <tr>
-        <td style="text-align: center; vertical-align: middle;">
-            <img src="${urlFoto}" width="80" style="border-radius:15px; object-fit:cover; aspect-ratio:3/4; display: block; margin: 0 auto;" onerror="this.src='https://placehold.co'">
+        <td class="center">
+            <img src="${urlFoto}" class="avatar-img" onerror="this.src='https://placehold.co'">
         </td>
-        <td style="vertical-align: middle; font-weight: bold; color: #333;">${namaPeserta || "-"}</td>
-        <td style="vertical-align: middle; color: #555;">${asalKota || "-"}</td>
-        <td style="text-align: center; vertical-align: middle; font-weight: 500;">${formatTime(waktuPresensi)}</td>
+        <td>
+            <span class="nama-peserta">${namaPeserta || "-"}</span>
+        </td>
+        <td>
+            <span class="asal-kota">${asalKota || "-"}</span>
+        </td>
+        <td class="center">
+            <span class="waktu-badge">${formatTime(waktuPresensi)}</span>
+        </td>
     </tr>
     `;
 });
-
 
         }
     } catch (error) {
