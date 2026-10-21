@@ -13,31 +13,44 @@ async function loadDashboard() {
     try {
         const response = await fetch(API_URL);
         const data = await response.json();
-        console.log(data);
+        
+        // Membantu pengecekan: Buka Inspect Element (F12) -> Console di Browser untuk melihat data asli
+        console.log("Data mentah dari Google Sheet:", data);
 
-        // 1. Filter data berdasarkan Kode Acara (Mengabaikan baris header indeks 0)
-        // row[1] adalah Kolom B (Kode Acara)
-        const pesertaHadir = data.slice(1).filter(row => row[1] === EVENT_CONFIG.kodeAcara);
+        if (!data || data.length <= 1) {
+            console.warn("Google Sheet masih kosong atau hanya berisi header.");
+            return;
+        }
 
-        // 2. Tampilkan Total Hadir di Proyektor
+        // 1. FILTER DATA DENGAN AMAN (.trim() untuk menghapus spasi tak sengaja)
+        const targetKode = EVENT_CONFIG.kodeAcara.trim().toLowerCase();
+        
+        const pesertaHadir = data.slice(1).filter(row => {
+            // Pastikan kolom Kode Acara (Indeks 1 / Kolom B) tersedia sebelum di-filter
+            if (row && row[1]) {
+                return row[1].toString().trim().toLowerCase() === targetKode;
+            }
+            return false;
+        });
+
+        // 2. TAMPILKAN TOTAL HADIR
         document.getElementById("total").innerHTML = pesertaHadir.length;
 
-        // 3. Ambil elemen tabel body untuk daftar nama
+        // 3. RENDER TABEL PESERTA
         const tbody = document.getElementById("listPeserta");
         tbody.innerHTML = "";
 
-        // 4. Ambil 5 data TERAKHIR dan URUTKAN dari yang paling baru
+        // Ambil 5 data terbaru
         const limaTerakhir = pesertaHadir.slice(-5).reverse();
 
-        // 5. Render ke dalam tabel HTML menggunakan urutan kolom Google Sheet Anda
         limaTerakhir.forEach(row => {
             tbody.innerHTML += `
             <tr>
                 <td>
                     <img src="${convertDrive(row[5])}" width="80" style="border-radius:15px; object-fit:cover; aspect-ratio:3/4;">
                 </td>
-                <td>${row[3]}</td>
-                <td>${row[4]}</td>
+                <td>${row[3] || "-"}</td>
+                <td>${row[4] || "-"}</td>
                 <td>${formatTime(row[2])}</td>
             </tr>
             `;
@@ -46,6 +59,7 @@ async function loadDashboard() {
         console.error("Gagal memuat data dashboard:", error);
     }
 }
+
 
 // Format Tampilan Waktu (Jam:Menit WIB)
 function formatTime(value) {
