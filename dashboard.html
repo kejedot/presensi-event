@@ -1,111 +1,295 @@
 <!DOCTYPE html>
-
-<html>
-
-
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Presensi Realtime</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #090d16 0%, #12255c 50%, #1e4ed8 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
 
-<title>
-Dashboard Presensi
-</title>
+        .dashboard {
+            padding: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
 
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-<link rel="stylesheet" href="dashboard.css">
+        .dashboard-header h1 {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin: 0 0 8px 0;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
 
+        .dashboard-header h2 {
+            font-size: 26px;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            opacity: 0.95;
+            color: #f1f5f9;
+        }
 
+        .dashboard-header p {
+            font-size: 18px;
+            margin: 0;
+            opacity: 0.8;
+            background: rgba(255, 255, 255, 0.1);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        /* LAYOUT SPLIT CONTAINER */
+        .main-container {
+            display: flex;
+            gap: 30px;
+            flex: 1;
+            align-items: stretch;
+        }
+
+        /* SISI KIRI: TABEL PESERTA (70%) */
+        .left-panel {
+            flex: 7;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+        }
+
+        th {
+            font-size: 18px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        th.center, td.center {
+            text-align: center;
+        }
+
+        /* DESAIN GLASSMORPHISM ROW */
+        tbody tr {
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.01);
+        }
+
+        td {
+            padding: 14px 20px;
+            font-size: 22px;
+            color: #f8fafc;
+        }
+
+        /* Rounded corner untuk baris table yang terpisah */
+        td:first-child {
+            border-top-left-radius: 16px;
+            border-bottom-left-radius: 16px;
+        }
+
+        td:last-child {
+            border-top-right-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+
+        .avatar-img {
+            width: 75px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.2);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .nama-peserta {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .asal-kota {
+            font-weight: 500;
+            color: #cbd5e1;
+        }
+
+        .waktu-badge {
+            background: rgba(37, 99, 235, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.5);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            color: #60a5fa;
+            display: inline-block;
+        }
+
+        /* SISI KANAN: STATISTIK TOTAL HADIR (30%) */
+        .right-panel {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #total {
+            font-size: 130px;
+            font-weight: 800;
+            line-height: 1;
+            color: #3b82f6;
+            text-shadow: 0 0 30px rgba(59,130,246,0.5);
+            margin: 10px 0;
+        }
+
+        /* FOOTER / RUNNING TEXT */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+            color: #94a3b8;
+            background: rgba(9, 13, 22, 0.6);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
-
-
-
 <body>
 
+    <div class="dashboard">
+        <!-- HEADER ACARA -->
+        <div class="dashboard-header">
+            <h1 id="namaAplikasi">DASHBOARD PRESENSI</h1>
+            <h2 id="namaAcara">Memuat nama acara...</h2>
+            <p id="detailAcara">Memuat detail lokasi...</p>
+        </div>
 
-<div class="dashboard">
+        <!-- MAIN SPLIT SCREEN CONTAINER -->
+        <div class="main-container">
+            
+            <!-- SISI KIRI: LIST PESERTA -->
+            <div class="left-panel">
+                <div class="panel-title">
+                    ⏱️ Peserta Terbaru Hadir
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;" class="center">Foto</th>
+                                <th style="width: 40%;">Nama</th>
+                                <th style="width: 30%;">Kabupaten/Kota</th>
+                                <th style="width: 15%;" class="center">Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listPeserta">
+                            <!-- Data akan di-render otomatis melalui JavaScript -->
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px;">
+                                    Menghubungkan ke server Google Sheets...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
+            <!-- SISI KANAN: UTILITY & TOTAL -->
+            <div class="right-panel">
+                <div class="stat-card">
+                    <h3>Total Hadir</h3>
+                    <div id="total">0</div>
+                    <div style="color: #4ade80; font-weight: 600; font-size: 18px; margin-top: 15px; background: rgba(74,222,128,0.1); padding: 6px 16px; border-radius: 20px;">
+                        🟢 Sinkronisasi Otomatis
+                    </div>
+                </div>
+            </div>
 
-<header>
+        </div>
+    </div>
 
-<h1 id="namaAcara"></h1>
-
-<p id="detailAcara"></p>
-
-</header>
-
-
-
-<section class="stat-card">
-
-
-<h2>
-Total Hadir
-</h2>
-
-
-<div id="total">
-
-0
-
-</div>
-
-
-</section>
-
-
-
-
-<section class="participant">
-
-
-<h2>
-Peserta Terbaru
-</h2>
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>Foto</th>
-
-<th>Nama</th>
-
-<th>Kabupaten/Kota</th>
-
-<th>Waktu</th>
-
-</tr>
-
-</thead>
-
-
-<tbody id="listPeserta">
-
-
-</tbody>
-
-
-</table>
-
-
-</section>
-
-
-</div>
-
-
-<!-- Contoh jika menggunakan tag div atau p -->
-<div style="text-align: center; width: 100%; color: white; padding: 15px 0;">
-    Sekretariat DPW PKS Jawa Tengah
-</div>
-
-<script src="config.js"></script>
-
-<script src="dashboard.js"></script>
-
+    <!-- FOOTER INFORMASI LOKASI -->
+    <footer>
+        Sekretariat DPW PKS Jawa Tengah
+    </footer>
 
 </body>
-
 </html>
