@@ -49,11 +49,12 @@ async function loadDashboard() {
             // Ambil maksimal 5 data terakhir dan balik urutannya agar yang terbaru di atas
             const limaTerakhir = pesertaHadir.slice(-5).reverse();
 
-            limaTerakhir.forEach(row => {
+           limaTerakhir.forEach(row => {
                 tbody.innerHTML += `
                 <tr>
                     <td>
-                        <img src="${convertDrive(row[5])}" width="80" style="border-radius:15px; object-fit:cover; aspect-ratio:3/4;">
+                        // Langsung panggil row[8] karena Kolom I di Google Sheet sudah berupa link thumbnail siap pakai
+                        <img src="${row[8] || ''}" width="80" style="border-radius:15px; object-fit:cover; aspect-ratio:3/4;">
                     </td>
                     <td>${row[3] || "-"}</td>
                     <td>${row[4] || "-"}</td>
@@ -80,17 +81,7 @@ function formatTime(value) {
 // 5. AUTO REFRESH PROYEKTOR TIAP 5 DETIK
 setInterval(loadDashboard, 5000);
 
-// 6. KONVERSI LINK GOOGLE DRIVE JADI FOTO (METODE EKSPOR RESMI)
+// Biarkan fungsi ini murni mengembalikan nilai teks murni di paling bawah dashboard.js
 function convertDrive(url) {
-    if (!url || typeof url !== 'string') return "";
-    
-    // Ambil ID unik file Google Drive
-    const match = url.match(/[-\w]{25,}/);
-    
-    if (match && match[0]) {
-        // Menggunakan uc?export=view&id agar browser langsung merender sebagai file gambar murni
-        return `https://google.com{match[0]}`;
-    }
-    
     return url;
 }
