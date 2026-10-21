@@ -1,8 +1,6 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18KXH5QJZ6AoQAGXf26DCzkz_K-f4rveadXF7Uj6m8qqRQbumiA/exec";
 
-const API_URL = "https://google.com";
-
 // LOAD IDENTITAS ACARA DENGAN PENGAMAN (Agar tidak crash jika ID HTML tidak ditemukan)
 const elAplikasi = document.getElementById("namaAplikasi");
 if (elAplikasi) elAplikasi.innerHTML = EVENT_CONFIG.namaAplikasi;
