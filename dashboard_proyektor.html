@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Presensi Proyektor</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a, #0f172a);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            padding: 30px;
+            max-width: 1800px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 38px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 8px 0;
+            font-weight: 800;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-header h2 {
+            font-size: 26px;
+            color: #38bdf8;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+
+        .dashboard-header p {
+            font-size: 18px;
+            margin: 0;
+            opacity: 0.8;
+            background: rgba(255, 255, 255, 0.1);
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* SUSUNAN LAYAR SPLIT-SCREEN SCREEN */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* SISI KIRI: TABEL DAFTAR HADIR (70%) */
+        .left-panel {
+            flex: 7;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .panel-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #f1f5f9;
+        }
+
+        .panel-title::before {
+            content: "⏱️";
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px; /* Memberi ruang antar baris kartu */
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th.center, td.center {
+            text-align: center;
+        }
+
+        .row-data {
+            background: rgba(255, 255, 255, 0.07);
+            transition: all 0.3s ease;
+        }
+
+        .row-data td {
+            padding: 12px 20px;
+            font-size: 22px;
+            vertical-align: middle;
+        }
+
+        .row-data td:first-child {
+            border-top-left-radius: 16px;
+            border-bottom-left-radius: 16px;
+        }
+
+        .row-data td:last-child {
+            border-top-right-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+
+        /* STYLING ELEMEN DALAM TABEL */
+        .avatar-img {
+            width: 75px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .nama-peserta {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .asal-kota {
+            color: #cbd5e1;
+            font-weight: 400;
+        }
+
+        .waktu-badge {
+            background: #2563eb;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        /* SISI KANAN: PAPAN SKOR TOTAL HADIR (30%) */
+        .right-panel {
+            flex: 3;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 30px;
+        }
+
+        .stat-label {
+            font-size: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        #total {
+            font-size: 130px;
+            font-weight: 800;
+            color: #38bdf8;
+            line-height: 1;
+            margin: 20px 0;
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+        }
+
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- HEADER ACARA -->
+        <header class="dashboard-header">
+            <h1 id="namaAplikasi">DASHBOARD PRESENSI</h1>
+            <h2 id="namaAcara">Membuka Koneksi Sistem...</h2>
+            <p id="detailAcara">Menyinkronkan Waktu...</p>
+        </header>
+
+        <!-- KONTEN SPLIT SCREEN -->
+        <div class="main-content">
+            <!-- PANEL KIRI: DAFTAR 5 ORANG TERBARU -->
+            <div class="left-panel">
+                <h3 class="panel-title">Peserta Terbaru Hadir</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="center" style="width: 15%;">Foto</th>
+                            <th style="width: 35%;">Nama</th>
+                            <th style="width: 30%;">Kabupaten/Kota</th>
+                            <th class="center" style="width: 20%;">Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listPeserta">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #94a3b8; padding: 50px 0; font-size: 20px;">
+                                Menghubungkan ke Server Google Sheets...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PANEL KANAN: COUNTER SKOR TOTAL -->
+            <div class="right-panel">
+                <div class="stat-label">Total Hadir</div>
+                <div id="total">0</div>
+                <div class="sync-status">
+                    <div class="sync-dot"></div>
+                    <span>Sinkronisasi Otomatis Aktif</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER TENGAH -->
+        <footer>
+            Sekretariat DPW PKS Jawa Tengah
+        </footer>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC DIRECT INTEGRATION -->
+    <script>
+        // 1. DATA CONFIGURATION & API URL
+        const API_URL = "https://google.com";
+        
+        const EVENT_CONFIG = {
+            namaAplikasi: "RAKOR & SOSIALISASI",
+            namaAcara: "PANDUAN PEMENANGAN PEMILU 2029",
+            tanggal: "24 Oktober 2026",
+            lokasi: "Aula Gedung DPW PKS Jawa Tengah",
+            kodeAcara: "Sos-2026-010"
+        };
+
+        // 2. TAMPILKAN TEKS IDENTITAS ACARA DI AWAL
+        document.getElementById("namaAplikasi").innerHTML = EVENT_CONFIG.namaAplikasi;
+        document.getElementById("namaAcara").innerHTML = EVENT_CONFIG.namaAcara;
+        document.getElementById("detailAcara").innerHTML = EVENT_CONFIG.tanggal + " • " + EVENT_CONFIG.lokasi;
+
+        // Jalankan sinkronisasi data pertama kali saat dimuat
+        loadDashboard();
+
+        // 3. FUNGSI UTAMA AMBIL DATA GOOGLE SHEETS
+        async function loadDashboard() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                console.log("Data Mentah Sukses Dimuat:", data);
+
+                if (!data || data.length <= 1) {
+                    document.getElementById("listPeserta").innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px 0;">Data Google Sheet kosong.</td></tr>`;
+                    return;
+                }
+
+                // Filter Data berdasarkan Kode Acara (Mengabaikan header baris ke-0)
+                const targetKode = EVENT_CONFIG.kodeAcara.trim().toLowerCase();
