@@ -53,7 +53,6 @@ async function loadDashboard() {
                 tbody.innerHTML += `
                 <tr>
                     <td>
-                        // Langsung panggil row[8] karena Kolom I di Google Sheet sudah berupa link thumbnail siap pakai
                         <img src="${row[8] || ''}" width="80" style="border-radius:15px; object-fit:cover; aspect-ratio:3/4;">
                     </td>
                     <td>${row[3] || "-"}</td>
