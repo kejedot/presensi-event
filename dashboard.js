@@ -1,13 +1,21 @@
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwyJbnnjB5NgGrwYrq18KXH5QJZ6AoQAGXf26DCzkz_K-f4rveadXF7Uj6m8qqRQbumiA/exec";
 
-// LOAD IDENTITAS ACARA
-document.getElementById("namaAplikasi").innerHTML = EVENT_CONFIG.namaAplikasi;
-document.getElementById("namaAcara").innerHTML = EVENT_CONFIG.namaAcara;
-document.getElementById("detailAcara").innerHTML = EVENT_CONFIG.tanggal + " • " + EVENT_CONFIG.lokasi;
+const API_URL = "https://google.com";
 
-// Jalankan saat pertama kali halaman dimuat
+// LOAD IDENTITAS ACARA DENGAN PENGAMAN (Agar tidak crash jika ID HTML tidak ditemukan)
+const elAplikasi = document.getElementById("namaAplikasi");
+if (elAplikasi) elAplikasi.innerHTML = EVENT_CONFIG.namaAplikasi;
+
+const elAcara = document.getElementById("namaAcara");
+if (elAcara) elAcara.innerHTML = EVENT_CONFIG.namaAcara;
+
+const elDetail = document.getElementById("detailAcara");
+if (elDetail) elDetail.innerHTML = EVENT_CONFIG.tanggal + " • " + EVENT_CONFIG.lokasi;
+
+// Jalankan fungsi utama dashboard
 loadDashboard();
+
 
 async function loadDashboard() {
     try {
