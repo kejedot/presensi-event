@@ -284,37 +284,109 @@
 
     <!-- JAVASCRIPT LOGIC DIRECT INTEGRATION -->
     <script>
-        // 1. DATA CONFIGURATION & API URL
-        const API_URL = "https://google.com";
+// 1. DATA CONFIGURATION & API URL
+const API_URL = "https://google.com";
+
+const EVENT_CONFIG = {
+    kodeAcara: "Sos-2026-010"
+};
+
+// 2. FUNGSI UTAMA AMBIL DATA GOOGLE SHEETS
+async function loadDashboard() {
+    try {
+        console.log("Mencoba mengambil data dari Google Sheet...");
+        const response = await fetch(API_URL);
+        const data = await response.json();
         
-        const EVENT_CONFIG = {
-            namaAplikasi: "RAKOR & SOSIALISASI",
-            namaAcara: "PANDUAN PEMENANGAN PEMILU 2029",
-            tanggal: "24 Oktober 2026",
-            lokasi: "Aula Gedung DPW PKS Jawa Tengah",
-            kodeAcara: "Sos-2026-010"
-        };
+        console.log("Data Mentah Sukses Dimuat:", data);
 
-        // 2. TAMPILKAN TEKS IDENTITAS ACARA DI AWAL
-        document.getElementById("namaAplikasi").innerHTML = EVENT_CONFIG.namaAplikasi;
-        document.getElementById("namaAcara").innerHTML = EVENT_CONFIG.namaAcara;
-        document.getElementById("detailAcara").innerHTML = EVENT_CONFIG.tanggal + " • " + EVENT_CONFIG.lokasi;
+        if (!data || data.length <= 1) {
+            document.getElementById("listPeserta").innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px 0;">Data Google Sheet kosong.</td></tr>`;
+            return;
+        }
 
-        // Jalankan sinkronisasi data pertama kali saat dimuat
-        loadDashboard();
+        // Filter Data berdasarkan Kode Acara (Mengabaikan header baris ke-0)
+        const targetKode = EVENT_CONFIG.kodeAcara.trim().toLowerCase();
+        
+        const pesertaHadir = data.slice(1).filter(item => {
+            let row = Array.isArray(item) ? item : (typeof item === 'string' ? item.split(',') : []);
+            if (row && row[1]) {
+                return row[1].toString().trim().toLowerCase() === targetKode;
+            }
+            return false;
+        });
 
-        // 3. FUNGSI UTAMA AMBIL DATA GOOGLE SHEETS
-        async function loadDashboard() {
-            try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                
-                console.log("Data Mentah Sukses Dimuat:", data);
+        // Perbarui Skor Total Hadir di Kanan
+        document.getElementById("total").innerHTML = pesertaHadir.length;
 
-                if (!data || data.length <= 1) {
-                    document.getElementById("listPeserta").innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px 0;">Data Google Sheet kosong.</td></tr>`;
-                    return;
-                }
+        // Render Baris Tabel
+        const tbody = document.getElementById("listPeserta");
+        tbody.innerHTML = "";
 
-                // Filter Data berdasarkan Kode Acara (Mengabaikan header baris ke-0)
-                const targetKode = EVENT_CONFIG.kodeAcara.trim().toLowerCase();
+        // Ambil 5 Peserta Terakhir Hadir dan balik urutannya (terbaru di atas)
+        const limaTerakhir = pesertaHadir.slice(-5).reverse();
+
+        if (limaTerakhir.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px 0;">Belum ada peserta masuk dengan kode: ${EVENT_CONFIG.kodeAcara}</td></tr>`;
+            return;
+        }
+
+        limaTerakhir.forEach(item => {
+            let row = Array.isArray(item) ? item : (typeof item === 'string' ? item.split(',') : []);
+            if (row.length === 0) return;
+
+            // Pemetaan Kolom Google Sheet Anda:
+            const waktuPresensi = row[2];
+            const namaPeserta = row[3];
+            const asalKota = row[4];
+            
+            // Baca Kolom I (Indeks 8). Jika kolom I kosong, gunakan kolom F (Indeks 5) sebagai cadangan otomatis
+            let urlFoto = row[8] || "";
+            if ((!urlFoto || !urlFoto.includes("http")) && row[5] && row[5].includes("http")) {
+                const matchId = row[5].match(/[-\w]{25,}/);
+                if (matchId) urlFoto = `https://google.com{matchId}&sz=w300`;
+            }
+
+            // Tambahkan ke tabel dengan class layout kaca premium
+            tbody.innerHTML += `
+            <tr class="row-data">
+                <td class="center">
+                    <img src="${urlFoto}" class="avatar-img" onerror="this.src='https://placehold.co'">
+                </td>
+                <td><span class="nama-peserta">${namaPeserta || "-"}</span></td>
+                <td><span class="asal-kota">${asalKota || "-"}</span></td>
+                <td class="center"><span class="waktu-badge">${formatTime(waktuPresensi)}</span></td>
+            </tr>
+            `;
+        });
+
+    } catch (error) {
+        console.error("Koneksi API Gagal/Bermasalah:", error);
+    }
+}
+
+// 3. FUNGSI PARSING WAKTU KE WIB (ANTI-INVALID DATE)
+function formatTime(value) {
+    if (!value) return "-";
+    const cleanValue = value.toString().trim();
+    const date = new Date(cleanValue);
+    
+    if (isNaN(date.getTime())) {
+        const matchTime = cleanValue.match(/(\d{2}):(\d{2})/);
+        return matchTime ? `${matchTime[1]}.${matchTime[2]} WIB` : "-";
+    }
+    
+    return date.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit"
+    }).replace(':', '.') + " WIB";
+}
+
+// 4. PEMICU UTAMA DI PALING BAWAH (Memastikan semua fungsi sudah terbaca browser terlebih dahulu)
+document.addEventListener("DOMContentLoaded", function() {
+    // Jalankan sinkronisasi data pertama kali saat halaman siap
+    loadDashboard();
+    
+    // Jalankan reload otomatis setiap 5 detik
+    setInterval(loadDashboard, 5000);
+});
